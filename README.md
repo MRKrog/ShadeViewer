@@ -51,7 +51,7 @@ You don’t have to ever use `eject`. The curated feature set is suitable for sm
   - 0.5
       - add a README to new repo that is accessible **completed**
       - Create branching model
-      - Add current code to development branch **completed**
+      - Add current code to development branch 
       - Clean code (Ben Chapman)
   - 0.6
       - Feature 0.61
