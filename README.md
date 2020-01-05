@@ -84,10 +84,14 @@ Benjamin Cully
 
 Michael Krog
 
+
+
+
+
 **Open Source Software Dependencies:**
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-three.js
+**three.js**
 The MIT License
 
 Copyright © 2010-2020 three.js authors
@@ -111,7 +115,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 
 
-node.js
+
+
+**node.js**
+
 Node.js is licensed for use as follows:
 
 """
