@@ -55,12 +55,7 @@ class Shade extends Component {
 
   startCamera = () => {
     console.log('setCamera initiated');
-    this.camera = new THREE.PerspectiveCamera(
-      75, // fov = field of view
-      this.width / this.height, // aspect ratio
-      0.2, // near plane
-      300 // far plane
-    );
+    this.camera = new THREE.PerspectiveCamera(75,this.width / this.height,0.2,300);
     this.camera.position.set( 0, 20, 20 ); 
   };
 
@@ -93,7 +88,6 @@ class Shade extends Component {
     console.log(pointL)
 
     pointL.forEach(point => {
-      console.log(point);
       point.castShadow = true;
       this.scene.add(point)
     })
