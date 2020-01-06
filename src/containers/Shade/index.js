@@ -18,23 +18,22 @@ class Shade extends Component {
     this.state = {
       AAStatus: true,
       PCStatus: true,
-
-      shoe: ''
     };
   }
 
    componentDidMount() {
     console.log('You reached componentDidMount');
     this.setScene();
-    this.setCamera();
-    this.startRenderer();
+    this.startCamera();
+    this.setRenderer();
     this.setControls();
-    this.handleLighting();
-    this.startEnvironment();
-    this.startGLTF();
-    this.startTestGeo();
-    this.startAnimationLoop();
-    this.startRenderLoop();
+    this.startLighting();
+    this.setEnvironment();
+    this.handleEnvironment();
+    this.handleGLTF();
+    this.startRefGeo();
+    this.animationLoop();
+    this.renderLoop();
 
     window.addEventListener('resize', this.handleWindowResize);
   };
@@ -54,7 +53,7 @@ class Shade extends Component {
     this.scene = new THREE.Scene();
   };
 
-  setCamera = () => {
+  startCamera = () => {
     console.log('setCamera initiated');
     this.camera = new THREE.PerspectiveCamera(
       75, // fov = field of view
@@ -65,7 +64,7 @@ class Shade extends Component {
     this.camera.position.set( 0, 20, 20 ); 
   };
 
-  startRenderer = () => {
+  setRenderer = () => {
     console.log('startRenderer initiated');
     const { AAStatus } = this.state;
     this.renderer = new THREE.WebGLRenderer( { antialias: AAStatus } );
@@ -80,7 +79,7 @@ class Shade extends Component {
     this.controls = new OrbitControls( this.camera, this.mount );
   };
 
-  handleLighting = () => {
+  startLighting = () => {
     console.log('handleLighting initiated');
     const pointL = [];
     pointL[0] = new THREE.PointLight( 0xffffff,10,40,2);
@@ -101,13 +100,15 @@ class Shade extends Component {
 
   }
 
-  startEnvironment = () => {
+  setEnvironment = () => {
     console.log('startEnvironment initiated');
 
     const { PCStatus } = this.state;
     this.renderer.physicallyCorrectLights = PCStatus;
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  };
 
+  handleEnvironment = () => {
     const pmremGeneratorTest = new THREE.PMREMGenerator( this.renderer );
 
     new RGBELoader()
@@ -120,9 +121,9 @@ class Shade extends Component {
     });
 
     pmremGeneratorTest.compileEquirectangularShader();
-  };
+  }
 
-  startGLTF = async () => {
+  handleGLTF = async () => {
     console.log('startGLTF initiated');
 
     new GLTFLoader().load(glbAsset, (glb) => {
@@ -130,7 +131,7 @@ class Shade extends Component {
   	});
   };
 
-  startTestGeo = () => {
+  startRefGeo = () => {
     console.log('startTestGeo initiated');
     const geometry = new THREE.BoxGeometry(2, 2, 2);
     const material = new THREE.MeshStandardMaterial( {
@@ -145,12 +146,12 @@ class Shade extends Component {
     this.scene.add(this.cube);
   };
 
-  startAnimationLoop = () => {
-    this.requestID = window.requestAnimationFrame(this.startRenderLoop);
+  animationLoop = () => {
+    this.requestID = window.requestAnimationFrame(this.renderLoop);
   };
 
-  startRenderLoop = () => {
-    this.requestID = window.requestAnimationFrame(this.startAnimationLoop);
+  renderLoop = () => {
+    this.requestID = window.requestAnimationFrame(this.animationLoop);
     this.renderer.render( this.scene, this.camera );
   };
 
