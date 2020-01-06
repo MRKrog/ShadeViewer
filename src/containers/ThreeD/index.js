@@ -25,7 +25,7 @@ class ThreeD extends Component {
   }
 
    componentDidMount() {
-    console.log('hello');
+    console.log('You reached componentDidMount');
     this.setScene();
     this.setCamera();
     this.startRenderer();
@@ -41,12 +41,14 @@ class ThreeD extends Component {
   };
 
   componentWillUnmount() {
+    console.log('You reached componentWillUnmount');
     window.removeEventListener('resize', this.handleWindowResize);
     window.cancelAnimationFrame(this.requestID);
     this.controls.dispose();
   };
 
   setScene = () => {
+    console.log('setScene initiated');
     this.width = this.mount.clientWidth;
     this.height = this.mount.clientHeight;
 
@@ -54,6 +56,7 @@ class ThreeD extends Component {
   };
 
   setCamera = () => {
+    console.log('setCamera initiated');
     this.camera = new THREE.PerspectiveCamera(
       75, // fov = field of view
       this.width / this.height, // aspect ratio
@@ -64,6 +67,7 @@ class ThreeD extends Component {
   };
 
   startRenderer = () => {
+    console.log('startRenderer initiated');
     const { AAStatus } = this.state;
     this.renderer = new THREE.WebGLRenderer( { antialias: AAStatus } );
     this.renderer.setSize( this.width, this.height );
@@ -73,10 +77,12 @@ class ThreeD extends Component {
   };
 
   setControls = () => {
+    console.log('setControls initiated');
     this.controls = new OrbitControls( this.camera, this.mount );
   };
 
   startEnvironment = () => {
+    console.log('startEnvironment initiated');
     const { PCStatus } = this.state;
     this.renderer.physicallyCorrectLights = PCStatus;
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
@@ -87,7 +93,8 @@ class ThreeD extends Component {
   }
 
   startGLTF = async () => {
-   const pmremGeneratorTest = new THREE.PMREMGenerator( this.renderer );
+    console.log('startGLTF initiated');
+    const pmremGeneratorTest = new THREE.PMREMGenerator( this.renderer );
 
     new RGBELoader()
     .setDataType(THREE.UnsignedByteType)
@@ -106,6 +113,7 @@ class ThreeD extends Component {
   };
 
   startTestGeo = () => {
+    console.log('startTestGeo initiated');
     const geometry = new THREE.BoxGeometry(2, 2, 2);
     const material = new THREE.MeshStandardMaterial( {
       color: 0x156289,
@@ -120,6 +128,7 @@ class ThreeD extends Component {
   };
 
   handleLighting = () => {
+    console.log('handleLighting initiated');
     const lights = [];
     lights[0] = new THREE.PointLight( 0xffffff, 1, 0 );
     lights[1] = new THREE.PointLight( 0xffffff, 1, 0 );
@@ -129,9 +138,9 @@ class ThreeD extends Component {
     lights[1].position.set( 100, 200, 100 );
     lights[2].position.set( -100, -200, -100 );
 
-    this.scene.add( lights[0] );
-    this.scene.add( lights[1] );
-    this.scene.add( lights[2] );
+    // this.scene.add( lights[0] );
+    // this.scene.add( lights[1] );
+    // this.scene.add( lights[2] );
   }
 
   startAnimationLoop = () => {
