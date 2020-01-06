@@ -50,7 +50,7 @@ You don’t have to ever use `eject`. The curated feature set is suitable for sm
 - **SHADE Phase 0.1+**
   - 0.5
       - add a README to new repo that is accessible **completed**
-      - Create branching model
+      - Create branching model **completed**
       - Add current code to development branch 
       - Clean code (Ben Chapman)
   - 0.6
