@@ -62,7 +62,7 @@ class Shade extends Component {
       0.2, // near plane
       300 // far plane
     );
-    this.camera.position.set( 0, 30, 20 ); 
+    this.camera.position.set( 0, 20, 20 ); 
   };
 
   startRenderer = () => {
@@ -82,18 +82,23 @@ class Shade extends Component {
 
   handleLighting = () => {
     console.log('handleLighting initiated');
-    const lights = [];
-    lights[0] = new THREE.PointLight( 0xffffff, 1, 0 );
-    lights[1] = new THREE.PointLight( 0xffffff, 1, 0 );
-    lights[2] = new THREE.PointLight( 0xffffff, 1, 0 );
+    const pointL = [];
+    pointL[0] = new THREE.PointLight( 0xffffff,10,40,2);
+    pointL[1] = new THREE.PointLight( 0xffffff,10,40,2);
+    pointL[2] = new THREE.PointLight( 0xffffff,10,40,2);
 
-    lights[0].position.set( 0, 200, 0 );
-    lights[1].position.set( 100, 200, 100 );
-    lights[2].position.set( -100, -200, -100 );
+    pointL[0].position.set( 0,20,0 );
+    pointL[1].position.set( 10,10,10 );
+    pointL[2].position.set( -10,-10,-10 );
 
-    // this.scene.add( lights[0] );
-    // this.scene.add( lights[1] );
-    // this.scene.add( lights[2] );
+    console.log(pointL)
+
+    pointL.forEach(point => {
+      console.log(point);
+      point.castShadow = true;
+      this.scene.add(point)
+    })
+
   }
 
   startEnvironment = () => {
@@ -141,10 +146,7 @@ class Shade extends Component {
   };
 
   startAnimationLoop = () => {
-    // this.cube.rotation.x += 0.01;
-    // this.cube.rotation.y += 0.01;
     this.requestID = window.requestAnimationFrame(this.startRenderLoop);
-
   };
 
   startRenderLoop = () => {
