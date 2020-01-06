@@ -3,9 +3,9 @@ import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
-
-import hdrTest from "../../assets/pedestrian_overpass_1k.hdr";
-import glbAsset from "../../assets/glb/piqhx0.glb";
+import hdrENV from "../../assets/overpass_1k.hdr"; //Environment (lights objects)
+import hdrBKD from "../../assets/bridge_1k.hdr";  //Background (visible in viewport)
+import glbAsset from "../../assets/glb/piqhx0.glb"; //Zipped GLTF AR Asset
 
 const style = {
     height: "1000px",
@@ -16,8 +16,8 @@ class Shade extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      AAStatus: true,
-      PCStatus: true,
+      AAStatus: true, //Enables Anti-Aliasing on the OpenGL Renderer 
+      PCStatus: true, //Enables Physically Correct Lighting
     };
   }
 
@@ -35,6 +35,11 @@ class Shade extends Component {
     this.handleCamera();
     this.animationLoop();
     this.renderLoop();
+    /*Set is used for "invisible" high-level scene construction. 
+    Start is used for objects in said scene. 
+    Handle is for making later changes to a set/start, or when an external file (glb, hdr) is used in the method
+    Loops do not have prefixes
+    */
 
     window.addEventListener('resize', this.handleWindowResize);
   };
@@ -64,27 +69,27 @@ class Shade extends Component {
     console.log('setRenderer initiated');
     const { AAStatus } = this.state;
     this.renderer = new THREE.WebGLRenderer( { antialias: AAStatus } );
-    this.renderer.setSize( this.width, this.height );
-    this.renderer.setPixelRatio( window.devicePixelRatio );
+    this.renderer.setSize(this.width,this.height);
+    this.renderer.setPixelRatio(window.devicePixelRatio);
     this.renderer.outputEncoding = THREE.sRGBEncoding;
-    this.mount.appendChild( this.renderer.domElement ); // mount using React ref
+    this.mount.appendChild(this.renderer.domElement); // mount using React ref
   };
 
   setControls = () => {
     console.log('setControls initiated');
-    this.controls = new OrbitControls( this.camera, this.mount );
+    this.controls = new OrbitControls(this.camera,this.mount);
   };
 
   startLighting = () => {
     console.log('startLighting initiated');
     const pointL = [];
-    pointL[0] = new THREE.PointLight( 0xffffff,10,40,2);
-    pointL[1] = new THREE.PointLight( 0xffffff,10,40,2);
-    pointL[2] = new THREE.PointLight( 0xffffff,10,40,2);
+    pointL[0] = new THREE.PointLight(0xffffff,10,40,2);
+    pointL[1] = new THREE.PointLight(0xffffff,10,40,2);
+    pointL[2] = new THREE.PointLight(0xffffff,10,40,2);
 
-    pointL[0].position.set( 0,20,0 );
-    pointL[1].position.set( 10,10,10 );
-    pointL[2].position.set( -10,-10,-10 );
+    pointL[0].position.set(0,20,0);
+    pointL[1].position.set(10,10,10);
+    pointL[2].position.set(-10,-10,-10);
 
     console.log(pointL)
 
@@ -110,12 +115,25 @@ class Shade extends Component {
 
     new RGBELoader()
     .setDataType(THREE.UnsignedByteType)
-    .load(hdrTest, (texture) => {
+    .load(hdrENV, (texture) => {
     	var envMap = pmremGeneratorTest.fromEquirectangular(texture).texture;
     	pmremGeneratorTest.dispose();
-    	this.scene.background = envMap;
+    	
     	this.scene.environment = envMap;
-    });
+    }
+    );
+
+    new RGBELoader()
+    .setDataType(THREE.UnsignedByteType)
+    .load(hdrBKD, (texture) => {
+    	var envMap = pmremGeneratorTest.fromEquirectangular(texture).texture;
+    	pmremGeneratorTest.dispose();
+    	
+    	this.scene.background = envMap;
+    }
+    
+    );
+    
 
     pmremGeneratorTest.compileEquirectangularShader();
   }
@@ -158,14 +176,14 @@ class Shade extends Component {
 
   renderLoop = () => {
     this.requestID = window.requestAnimationFrame(this.animationLoop);
-    this.renderer.render( this.scene, this.camera );
+    this.renderer.render(this.scene,this.camera);
   };
 
   handleWindowResize = () => {
     this.width = this.mount.clientWidth;
     this.height = this.mount.clientHeight;
 
-    this.renderer.setSize( this.width, this.height );
+    this.renderer.setSize(this.width,this.height);
     this.camera.aspect = this.width / this.height;
 
     // Note that after making changes to most of camera properties you have to call
