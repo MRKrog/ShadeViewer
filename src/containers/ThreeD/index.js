@@ -81,16 +81,28 @@ class ThreeD extends Component {
     this.controls = new OrbitControls( this.camera, this.mount );
   };
 
+  handleLighting = () => {
+    console.log('handleLighting initiated');
+    const lights = [];
+    lights[0] = new THREE.PointLight( 0xffffff, 1, 0 );
+    lights[1] = new THREE.PointLight( 0xffffff, 1, 0 );
+    lights[2] = new THREE.PointLight( 0xffffff, 1, 0 );
+
+    lights[0].position.set( 0, 200, 0 );
+    lights[1].position.set( 100, 200, 100 );
+    lights[2].position.set( -100, -200, -100 );
+
+    // this.scene.add( lights[0] );
+    // this.scene.add( lights[1] );
+    // this.scene.add( lights[2] );
+  }
+
   startEnvironment = () => {
     console.log('startEnvironment initiated');
     const { PCStatus } = this.state;
     this.renderer.physicallyCorrectLights = PCStatus;
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
   };
-
-  handleLoader = () => {
-
-  }
 
   startGLTF = async () => {
     console.log('startGLTF initiated');
@@ -126,22 +138,6 @@ class ThreeD extends Component {
     this.cube = new THREE.Mesh( geometry, material );
     this.scene.add(this.cube);
   };
-
-  handleLighting = () => {
-    console.log('handleLighting initiated');
-    const lights = [];
-    lights[0] = new THREE.PointLight( 0xffffff, 1, 0 );
-    lights[1] = new THREE.PointLight( 0xffffff, 1, 0 );
-    lights[2] = new THREE.PointLight( 0xffffff, 1, 0 );
-
-    lights[0].position.set( 0, 200, 0 );
-    lights[1].position.set( 100, 200, 100 );
-    lights[2].position.set( -100, -200, -100 );
-
-    // this.scene.add( lights[0] );
-    // this.scene.add( lights[1] );
-    // this.scene.add( lights[2] );
-  }
 
   startAnimationLoop = () => {
     // this.cube.rotation.x += 0.01;
