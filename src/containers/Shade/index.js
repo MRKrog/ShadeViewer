@@ -8,7 +8,7 @@ import hdrTest from "../../assets/pedestrian_overpass_1k.hdr";
 import glbAsset from "../../assets/glb/piqhx0.glb";
 
 const style = {
-    height: "500px",
+    height: "1000px",
     width: "50%" // we can control scene size by setting container dimensions
 };
 
@@ -18,8 +18,7 @@ class Shade extends Component {
     this.state = {
       AAStatus: true,
       PCStatus: true,
-      height: "",
-      width: "",
+
       shoe: ''
     };
   }
@@ -60,10 +59,10 @@ class Shade extends Component {
     this.camera = new THREE.PerspectiveCamera(
       75, // fov = field of view
       this.width / this.height, // aspect ratio
-      0.1, // near plane
-      1000 // far plane
+      0.2, // near plane
+      300 // far plane
     );
-    this.camera.position.z = 9; // is used here to set some distance from a cube that is located at z = 0
+    this.camera.position.set( 0, 30, 20 ); 
   };
 
   startRenderer = () => {
