@@ -166,7 +166,7 @@ class Shade extends Component {
   };
 
   render() {
-    return <div style={style} className="threeD" ref={ref => (this.mount = ref)} />;
+    return <div style={style} className="Shade" ref={ref => (this.mount = ref)} />;
   }
 }
 
