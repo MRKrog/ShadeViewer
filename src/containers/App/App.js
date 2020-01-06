@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import ThreeD from '../ThreeD';
+import Shade from '../Shade';
 import "./App.css";
 import bgImage from "../../assets/bgimage.jpg";
 
@@ -25,7 +25,7 @@ class App extends Component {
         {
           isMounted ? (
           <div className="modal">
-             <ThreeD />
+             <Shade />
           </div>
           ) : (
           <button className="AppBtn" onClick={() => this.handleMount()}>

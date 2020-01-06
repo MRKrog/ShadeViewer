@@ -12,7 +12,7 @@ const style = {
     width: "50%" // we can control scene size by setting container dimensions
 };
 
-class ThreeD extends Component {
+class Shade extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -170,4 +170,4 @@ class ThreeD extends Component {
   }
 }
 
-export default ThreeD;
+export default Shade;
