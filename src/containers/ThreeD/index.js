@@ -99,13 +99,11 @@ class ThreeD extends Component {
 
   startEnvironment = () => {
     console.log('startEnvironment initiated');
+
     const { PCStatus } = this.state;
     this.renderer.physicallyCorrectLights = PCStatus;
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  };
 
-  startGLTF = async () => {
-    console.log('startGLTF initiated');
     const pmremGeneratorTest = new THREE.PMREMGenerator( this.renderer );
 
     new RGBELoader()
@@ -115,13 +113,17 @@ class ThreeD extends Component {
     	pmremGeneratorTest.dispose();
     	this.scene.background = envMap;
     	this.scene.environment = envMap;
-
-      new GLTFLoader().load(glbAsset, (glb) => {
-    		this.scene.add(glb.scene);
-    	});
     });
 
     pmremGeneratorTest.compileEquirectangularShader();
+  };
+
+  startGLTF = async () => {
+    console.log('startGLTF initiated');
+
+    new GLTFLoader().load(glbAsset, (glb) => {
+  		this.scene.add(glb.scene);
+  	});
   };
 
   startTestGeo = () => {
