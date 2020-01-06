@@ -32,6 +32,7 @@ class Shade extends Component {
     this.handleEnvironment();
     this.handleGLTF();
     this.startRefGeo();
+    this.handleCamera();
     this.animationLoop();
     this.renderLoop();
 
@@ -54,13 +55,13 @@ class Shade extends Component {
   };
 
   startCamera = () => {
-    console.log('setCamera initiated');
+    console.log('startCamera initiated');
     this.camera = new THREE.PerspectiveCamera(75,this.width / this.height,0.2,300);
     this.camera.position.set( 0, 20, 20 ); 
   };
 
   setRenderer = () => {
-    console.log('startRenderer initiated');
+    console.log('setRenderer initiated');
     const { AAStatus } = this.state;
     this.renderer = new THREE.WebGLRenderer( { antialias: AAStatus } );
     this.renderer.setSize( this.width, this.height );
@@ -75,7 +76,7 @@ class Shade extends Component {
   };
 
   startLighting = () => {
-    console.log('handleLighting initiated');
+    console.log('startLighting initiated');
     const pointL = [];
     pointL[0] = new THREE.PointLight( 0xffffff,10,40,2);
     pointL[1] = new THREE.PointLight( 0xffffff,10,40,2);
@@ -95,7 +96,7 @@ class Shade extends Component {
   }
 
   setEnvironment = () => {
-    console.log('startEnvironment initiated');
+    console.log('setEnvironment initiated');
 
     const { PCStatus } = this.state;
     this.renderer.physicallyCorrectLights = PCStatus;
@@ -103,7 +104,9 @@ class Shade extends Component {
   };
 
   handleEnvironment = () => {
-    const pmremGeneratorTest = new THREE.PMREMGenerator( this.renderer );
+    console.log('handleEnvironment initiated');
+    
+    const pmremGeneratorTest = new THREE.PMREMGenerator(this.renderer);
 
     new RGBELoader()
     .setDataType(THREE.UnsignedByteType)
@@ -117,8 +120,8 @@ class Shade extends Component {
     pmremGeneratorTest.compileEquirectangularShader();
   }
 
-  handleGLTF = async () => {
-    console.log('startGLTF initiated');
+  handleGLTF = () => {
+    console.log('handleGLTF initiated');
 
     new GLTFLoader().load(glbAsset, (glb) => {
   		this.scene.add(glb.scene);
@@ -126,7 +129,8 @@ class Shade extends Component {
   };
 
   startRefGeo = () => {
-    console.log('startTestGeo initiated');
+    console.log('startRefGeo initiated');
+    
     const geometry = new THREE.BoxGeometry(2, 2, 2);
     const material = new THREE.MeshStandardMaterial( {
       color: 0x156289,
@@ -136,8 +140,16 @@ class Shade extends Component {
       side: THREE.DoubleSide,
       flatShading: false
     });
-    this.cube = new THREE.Mesh( geometry, material );
+    
+    this.cube = new THREE.Mesh(geometry, material);
+    this.cube.position.set(15,0,0)
     this.scene.add(this.cube);
+  };
+
+  handleCamera = () => {
+    console.log('handleCamera initiated');
+
+    this.camera.lookAt(this.cube.position)
   };
 
   animationLoop = () => {
