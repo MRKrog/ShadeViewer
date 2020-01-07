@@ -32,7 +32,7 @@ class Shade extends Component {
     this.handleEnvironment();
     this.handleGLTF();
     this.startRefGeo();
-    this.handleCamera();
+    this.handleCameraControls();
     this.animationLoop();
     this.renderLoop();
     /*Set is used for "invisible" high-level scene construction. 
@@ -95,7 +95,7 @@ class Shade extends Component {
 
     pointL.forEach(point => {
       point.castShadow = true;
-      this.scene.add(point)
+      this.scene.add(point);
     })
 
   }
@@ -160,14 +160,15 @@ class Shade extends Component {
     });
     
     this.cube = new THREE.Mesh(geometry, material);
-    this.cube.position.set(15,0,0)
+    this.cube.position.set(15,0,0);
     this.scene.add(this.cube);
   };
 
-  handleCamera = () => {
+  handleCameraControls = () => {
     console.log('handleCamera initiated');
 
-    this.camera.lookAt(this.cube.position)
+    this.controls.target.set(15,0,0);
+    this.controls.update();
   };
 
   animationLoop = () => {
