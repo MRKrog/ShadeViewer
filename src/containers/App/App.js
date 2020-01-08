@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import ThreeD from '../ThreeD';
+import Shade from '../Shade';
 import "./App.css";
 import bgImage from "../../assets/bgimage.jpg";
 
@@ -7,7 +7,7 @@ class App extends Component {
   constructor() {
     super()
     this.state = {
-      isMounted: false
+      isMounted: true
     }
   }
 
@@ -21,17 +21,12 @@ class App extends Component {
     const { isMounted } = this.state;
 
     return (
-      <div className="App" style={{ backgroundImage: `url(${bgImage})` }}>
+      <div className="App">
         {
-          isMounted ? (
+          isMounted &&
           <div className="modal">
-             <ThreeD />
+             <Shade />
           </div>
-          ) : (
-          <button className="AppBtn" onClick={() => this.handleMount()}>
-              {isMounted ? "Exit" : "Modalize dez nuts"}
-          </button>
-          )
         }
       </div>
     )
