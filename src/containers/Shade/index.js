@@ -3,13 +3,15 @@ import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
 import hdrENV from "../../assets/overpass_1k.hdr"; //Environment (lights objects)
 import hdrBKD from "../../assets/bridge_1k.hdr";  //Background (visible in viewport)
 import glbAsset from "../../assets/glb/piqhx0.glb"; //Zipped GLTF AR Asset
 
 const style = {
     height: "1000px",
-    width: "100%" // we can control scene size by setting container dimensions
+    width: "100%"
 };
 
 class Shade extends Component {
@@ -34,6 +36,7 @@ class Shade extends Component {
     this.handleGLTF();
     this.startRefGeo();
     this.handleCameraControls();
+    this.setPostProcessing();
     this.animationLoop();
     this.renderLoop();
     /*Set is used for "invisible" high-level scene construction.
@@ -176,13 +179,21 @@ class Shade extends Component {
     this.controls.update();
   };
 
+  setPostProcessing = () => {
+    console.log('setPostProcessing initiated');
+
+    
+    this.levARcomposer = new EffectComposer(this.renderer);
+    this.levARcomposer.addPass( new RenderPass( this.scene, this.camera ) );
+  };
+
   animationLoop = () => {
     this.requestID = window.requestAnimationFrame(this.renderLoop);
   };
 
   renderLoop = () => {
+    this.levARcomposer.render();
     this.requestID = window.requestAnimationFrame(this.animationLoop);
-    this.renderer.render(this.scene,this.camera);
   };
 
   handleWindowResize = () => {

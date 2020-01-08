@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import Shade from '../Shade';
 import "./App.css";
-import bgImage from "../../assets/bgimage.jpg";
 
 class App extends Component {
   constructor() {
