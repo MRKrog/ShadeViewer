@@ -1,15 +1,18 @@
 import React, { Component } from 'react';
 import * as THREE from "three";
+import Stats from 'three/examples/jsm/libs/stats.module.js';
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
 import hdrENV from "../../assets/overpass_1k.hdr"; //Environment (lights objects)
 import hdrBKD from "../../assets/bridge_1k.hdr";  //Background (visible in viewport)
 import glbAsset from "../../assets/glb/piqhx0.glb"; //Zipped GLTF AR Asset
 
 const style = {
     height: "1000px",
-    width: "100%" // we can control scene size by setting container dimensions
+    width: "100%"
 };
 
 class Shade extends Component {
@@ -23,18 +26,19 @@ class Shade extends Component {
 
    componentDidMount() {
     console.log('You reached componentDidMount');
+    this.startStats();
     this.setScene();
     this.startCamera();
     this.setRenderer();
     this.setControls();
     this.startLighting();
     this.setEnvironment(); //Renderer settings relevant to handleEnvinronment()
-    this.handleEnvironment();
-    this.handleBackground(); //Loads Environment and Background
+    this.handleEnvironment(); //Loads Environment 
+    this.handleBackground(); //Loads Background
     this.handleGLTF();
     this.startRefGeo();
     this.handleCameraControls();
-    this.animationLoop();
+    this.setPostProcessing();
     this.renderLoop();
     /*Set is used for "invisible" high-level scene construction.
     Start is used for objects in said scene.
@@ -52,27 +56,30 @@ class Shade extends Component {
     this.controls.dispose();
   };
 
+  startStats = () => {
+    console.log('startStats initiated');
+    this.stats = new Stats();
+    this.mount.appendChild( this.stats.dom );
+  }
   setScene = () => {
     console.log('setScene initiated');
     this.width = this.mount.clientWidth;
     this.height = this.mount.clientHeight;
-
     this.scene = new THREE.Scene();
   };
 
   startCamera = () => {
     console.log('startCamera initiated');
     this.camera = new THREE.PerspectiveCamera(75,this.width / this.height,0.2,300);
-    this.camera.position.set( 0, 20, 20 );
   };
 
   setRenderer = () => {
     console.log('setRenderer initiated');
     const { AAStatus } = this.state;
     this.renderer = new THREE.WebGLRenderer( { antialias: AAStatus } );
+
     this.renderer.setSize(this.width,this.height);
     this.renderer.setPixelRatio(window.devicePixelRatio);
-    this.renderer.outputEncoding = THREE.sRGBEncoding;
     this.mount.appendChild(this.renderer.domElement); // mount using React ref
   };
 
@@ -83,64 +90,68 @@ class Shade extends Component {
 
   startLighting = () => {
     console.log('startLighting initiated');
-    const pointL = [];
-    pointL[0] = new THREE.PointLight(0xffffff,10,40,2);
-    pointL[1] = new THREE.PointLight(0xffffff,10,40,2);
-    pointL[2] = new THREE.PointLight(0xffffff,10,40,2);
+    const standaLight = [];
+    standaLight[0] = new THREE.PointLight(0xffffff,300,40,2);
+    standaLight[1] = new THREE.PointLight(0xffffff,300,40,2);
+    standaLight[2] = new THREE.PointLight(0xffffff,300,40,2);
+    standaLight[3] = new THREE.PointLight(0xffffff,300,40,2);
 
-    pointL[0].position.set(0,20,0);
-    pointL[1].position.set(10,10,10);
-    pointL[2].position.set(-10,-10,-10);
+    standaLight[0].position.set(0,10,20);
+    standaLight[1].position.set(20,10,0);
+    standaLight[2].position.set(0,10,-20);
+    standaLight[3].position.set(-20,10,0);
+    
 
-    console.log(pointL)
+    console.log(standaLight)
 
-    pointL.forEach(point => {
-      point.castShadow = true;
-      this.scene.add(point);
+    standaLight.forEach(i => {
+      i.castShadow = true;
+      this.scene.add(i);
     })
-
   }
 
   setEnvironment = () => {
     console.log('setEnvironment initiated');
-
+    
     const { PCStatus } = this.state;
     this.renderer.physicallyCorrectLights = PCStatus;
+
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    this.renderer.outputEncoding = THREE.sRGBEncoding;
   };
 
   handleEnvironment = () => {
     console.log('handleEnvironment initiated');
 
-    const pmremGeneratorTest = new THREE.PMREMGenerator(this.renderer);
+    this.levARpmremGenerator = new THREE.PMREMGenerator(this.renderer);
 
     new RGBELoader()
     .setDataType(THREE.UnsignedByteType)
     .load(hdrENV, (texture) => {
-    	var envMap = pmremGeneratorTest.fromEquirectangular(texture).texture;
-    	pmremGeneratorTest.dispose();
+    	var envMap = this.levARpmremGenerator.fromEquirectangular(texture).texture;
+    	this.levARpmremGenerator.dispose();
 
     	this.scene.environment = envMap;
     }
     );
-    pmremGeneratorTest.compileEquirectangularShader();
+    this.levARpmremGenerator.compileEquirectangularShader();
   }
 
   handleBackground = () => {
     console.log('handleBackground initiated');
 
-    const pmremGeneratorTest = new THREE.PMREMGenerator(this.renderer);
+    this.levARpmremGenerator = new THREE.PMREMGenerator(this.renderer);
 
     new RGBELoader()
     .setDataType(THREE.UnsignedByteType)
     .load(hdrBKD, (texture) => {
-    	var envMap = pmremGeneratorTest.fromEquirectangular(texture).texture;
-    	pmremGeneratorTest.dispose();
+    	var bkdMap = this.levARpmremGenerator.fromEquirectangular(texture).texture;
+    	this.levARpmremGenerator.dispose();
 
-    	this.scene.background = envMap;
+    	this.scene.background = bkdMap;
     }
     );
-    pmremGeneratorTest.compileEquirectangularShader();
+    this.levARpmremGenerator.compileEquirectangularShader();
   }
 
   handleGLTF = () => {
@@ -154,35 +165,70 @@ class Shade extends Component {
   startRefGeo = () => {
     console.log('startRefGeo initiated');
 
-    const geometry = new THREE.BoxGeometry(2, 2, 2);
-    const material = new THREE.MeshStandardMaterial( {
-      color: 0x156289,
+    const heroGeometry = new THREE.BoxGeometry(2,2,2);
+
+    const lightGeometry = new THREE.BoxGeometry(1,1,1);
+
+    const heroMaterial = new THREE.MeshStandardMaterial( {
+      color: 0x7C7C7C,
       metalness: 1,
-      roughness: 0.2,
-      emissive: 0x072534,
+      roughness: 0,
       side: THREE.DoubleSide,
       flatShading: false
     });
 
-    this.cube = new THREE.Mesh(geometry, material);
-    this.cube.position.set(15,0,0);
-    this.scene.add(this.cube);
+    const lightMaterial = new THREE.MeshStandardMaterial( {
+      color: 0xFFFF00,
+      metalness: 0,
+      roughness: 1,
+      emissive: 0xFFFF00,
+      side: THREE.DoubleSide,
+      flatShading: false
+    });
+
+    this.heroCube = new THREE.Mesh(heroGeometry, heroMaterial);
+
+    this.lightCube1 = new THREE.Mesh(lightGeometry, lightMaterial);
+    this.lightCube2 = new THREE.Mesh(lightGeometry, lightMaterial);
+    this.lightCube3 = new THREE.Mesh(lightGeometry, lightMaterial);
+    this.lightCube4 = new THREE.Mesh(lightGeometry, lightMaterial);
+
+    this.heroCube.position.set(0,10,0);
+
+    this.lightCube1.position.set(0,10,20);
+    this.lightCube2.position.set(20,10,0);
+    this.lightCube3.position.set(0,10,-20);
+    this.lightCube4.position.set(-20,10,0);
+
+    this.scene.add(this.heroCube);
+    
+    this.scene.add(this.lightCube1);
+    this.scene.add(this.lightCube2);
+    this.scene.add(this.lightCube3);
+    this.scene.add(this.lightCube4);
   };
 
   handleCameraControls = () => {
     console.log('handleCamera initiated');
-
-    this.controls.target.set(15,0,0);
+    this.camera.position.set( 0, 15, 50 );
+    this.controls.target.set(0,3,0);
+    this.controls.enableDamping = true;
+    this.controls.dampingFactor = 0.5;
+    this.controls.screenSpacePanning = true;
     this.controls.update();
   };
 
-  animationLoop = () => {
-    this.requestID = window.requestAnimationFrame(this.renderLoop);
+  setPostProcessing = () => {
+    console.log('setPostProcessing initiated');
+
+    this.levARcomposer = new EffectComposer(this.renderer);
+    this.levARcomposer.addPass( new RenderPass( this.scene, this.camera ) );
   };
 
   renderLoop = () => {
-    this.requestID = window.requestAnimationFrame(this.animationLoop);
-    this.renderer.render(this.scene,this.camera);
+    this.requestID = window.requestAnimationFrame(this.renderLoop);
+    this.levARcomposer.render();
+    this.stats.update();
   };
 
   handleWindowResize = () => {
