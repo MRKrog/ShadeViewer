@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import * as THREE from "three";
+import Stats from 'three/examples/jsm/libs/stats.module.js';
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
@@ -18,13 +19,14 @@ class Shade extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      AAStatus: true, //Enables Anti-Aliasing on the OpenGL Renderer
+      AAStatus: false, //Enables Anti-Aliasing on the OpenGL Renderer
       PCStatus: true, //Enables Physically Correct Lighting
     };
   }
 
    componentDidMount() {
     console.log('You reached componentDidMount');
+    this.startStats();
     this.setScene();
     this.startCamera();
     this.setRenderer();
@@ -55,11 +57,15 @@ class Shade extends Component {
     this.controls.dispose();
   };
 
+  startStats = () => {
+    console.log('startStats initiated');
+    this.stats = new Stats();
+    this.mount.appendChild( this.stats.dom );
+  }
   setScene = () => {
     console.log('setScene initiated');
     this.width = this.mount.clientWidth;
     this.height = this.mount.clientHeight;
-
     this.scene = new THREE.Scene();
   };
 
@@ -73,9 +79,9 @@ class Shade extends Component {
     console.log('setRenderer initiated');
     const { AAStatus } = this.state;
     this.renderer = new THREE.WebGLRenderer( { antialias: AAStatus } );
+
     this.renderer.setSize(this.width,this.height);
     this.renderer.setPixelRatio(window.devicePixelRatio);
-    this.renderer.outputEncoding = THREE.sRGBEncoding;
     this.mount.appendChild(this.renderer.domElement); // mount using React ref
   };
 
@@ -106,10 +112,12 @@ class Shade extends Component {
 
   setEnvironment = () => {
     console.log('setEnvironment initiated');
-
+    
     const { PCStatus } = this.state;
     this.renderer.physicallyCorrectLights = PCStatus;
+
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    this.renderer.outputEncoding = THREE.sRGBEncoding;
   };
 
   handleEnvironment = () => {
@@ -192,6 +200,7 @@ class Shade extends Component {
   };
 
   renderLoop = () => {
+    this.stats.update();
     this.levARcomposer.render();
     this.requestID = window.requestAnimationFrame(this.animationLoop);
   };
