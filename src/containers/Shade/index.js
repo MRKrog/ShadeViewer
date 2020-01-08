@@ -106,7 +106,6 @@ class Shade extends Component {
       point.castShadow = true;
       this.scene.add(point);
     })
-
   }
 
   setEnvironment = () => {
@@ -138,8 +137,6 @@ class Shade extends Component {
 
   handleBackground = () => {
     console.log('handleBackground initiated');
-
-    this.levARpmremGenerator = new THREE.PMREMGenerator(this.renderer);
 
     new RGBELoader()
     .setDataType(THREE.UnsignedByteType)
@@ -189,7 +186,6 @@ class Shade extends Component {
   setPostProcessing = () => {
     console.log('setPostProcessing initiated');
 
-    
     this.levARcomposer = new EffectComposer(this.renderer);
     this.levARcomposer.addPass( new RenderPass( this.scene, this.camera ) );
   };
@@ -198,7 +194,6 @@ class Shade extends Component {
     this.requestID = window.requestAnimationFrame(this.renderLoop);
     this.levARcomposer.render();
     this.stats.update();
-    
   };
 
   handleWindowResize = () => {
