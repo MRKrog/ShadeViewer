@@ -1,4 +1,9 @@
 SHADE, a lightweight HADES viewer for public embedded web systems.
+// buttonRoot.addEventListener('click', () => {
+//     ReactDOM.render(<App/>, document.getElementById('root'))
+//     serviceWorker.unregister();
+//   })
+
 
 Stylized Heuristic Augmented Delivery Environment (SHADE) is a framework for injecting dynamic 3D and AR content into webpages. SHADE uses React via Node to embed a modal on ecommerce platforms such as Shopify.
 
