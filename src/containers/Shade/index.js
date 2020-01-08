@@ -9,7 +9,7 @@ import glbAsset from "../../assets/glb/piqhx0.glb"; //Zipped GLTF AR Asset
 
 const style = {
     height: "1000px",
-    width: "50%" // we can control scene size by setting container dimensions
+    width: "95%" // we can control scene size by setting container dimensions
 };
 
 class Shade extends Component {
@@ -28,8 +28,9 @@ class Shade extends Component {
     this.setRenderer();
     this.setControls();
     this.startLighting();
-    this.setEnvironment();
+    this.setEnvironment(); //Renderer settings relevant to handleEnvinronment()
     this.handleEnvironment();
+    this.handleBackground(); //Loads Environment and Background
     this.handleGLTF();
     this.startRefGeo();
     this.handleCameraControls();
@@ -122,6 +123,13 @@ class Shade extends Component {
     	this.scene.environment = envMap;
     }
     );
+    pmremGeneratorTest.compileEquirectangularShader();
+  }
+
+  handleBackground = () => {
+    console.log('handleBackground initiated');
+    
+    const pmremGeneratorTest = new THREE.PMREMGenerator(this.renderer);
 
     new RGBELoader()
     .setDataType(THREE.UnsignedByteType)
@@ -131,10 +139,7 @@ class Shade extends Component {
     	
     	this.scene.background = envMap;
     }
-    
     );
-    
-
     pmremGeneratorTest.compileEquirectangularShader();
   }
 
