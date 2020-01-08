@@ -45,13 +45,13 @@ html, body, #root, .App {
   background: #231f20bd;
 }
 
-.threeD {
+.Shade {
   margin: auto;
   outline: none;
   cursor: pointer;
 }
 
-.threeD > canvas {
+.Shade > canvas {
   border-radius: 3px;
   box-shadow: 0px 2px 9px 0px #00000094;
   border: solid 1px #404040;
