@@ -19,7 +19,7 @@ class Shade extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      AAStatus: false, //Enables Anti-Aliasing on the OpenGL Renderer
+      AAStatus: true, //Enables Anti-Aliasing on the OpenGL Renderer
       PCStatus: true, //Enables Physically Correct Lighting
     };
   }
@@ -39,7 +39,6 @@ class Shade extends Component {
     this.startRefGeo();
     this.handleCameraControls();
     this.setPostProcessing();
-    this.animationLoop();
     this.renderLoop();
     /*Set is used for "invisible" high-level scene construction.
     Start is used for objects in said scene.
@@ -123,35 +122,35 @@ class Shade extends Component {
   handleEnvironment = () => {
     console.log('handleEnvironment initiated');
 
-    const pmremGeneratorTest = new THREE.PMREMGenerator(this.renderer);
+    this.levARpmremGenerator = new THREE.PMREMGenerator(this.renderer);
 
     new RGBELoader()
     .setDataType(THREE.UnsignedByteType)
     .load(hdrENV, (texture) => {
-    	var envMap = pmremGeneratorTest.fromEquirectangular(texture).texture;
-    	pmremGeneratorTest.dispose();
+    	var envMap = this.levARpmremGenerator.fromEquirectangular(texture).texture;
+    	this.levARpmremGenerator.dispose();
 
     	this.scene.environment = envMap;
     }
     );
-    pmremGeneratorTest.compileEquirectangularShader();
+    this.levARpmremGenerator.compileEquirectangularShader();
   }
 
   handleBackground = () => {
     console.log('handleBackground initiated');
 
-    const pmremGeneratorTest = new THREE.PMREMGenerator(this.renderer);
+    this.levARpmremGenerator = new THREE.PMREMGenerator(this.renderer);
 
     new RGBELoader()
     .setDataType(THREE.UnsignedByteType)
     .load(hdrBKD, (texture) => {
-    	var envMap = pmremGeneratorTest.fromEquirectangular(texture).texture;
-    	pmremGeneratorTest.dispose();
+    	var bkdMap = this.levARpmremGenerator.fromEquirectangular(texture).texture;
+    	this.levARpmremGenerator.dispose();
 
-    	this.scene.background = envMap;
+    	this.scene.background = bkdMap;
     }
     );
-    pmremGeneratorTest.compileEquirectangularShader();
+    this.levARpmremGenerator.compileEquirectangularShader();
   }
 
   handleGLTF = () => {
@@ -195,14 +194,11 @@ class Shade extends Component {
     this.levARcomposer.addPass( new RenderPass( this.scene, this.camera ) );
   };
 
-  animationLoop = () => {
-    this.requestID = window.requestAnimationFrame(this.renderLoop);
-  };
-
   renderLoop = () => {
-    this.stats.update();
+    this.requestID = window.requestAnimationFrame(this.renderLoop);
     this.levARcomposer.render();
-    this.requestID = window.requestAnimationFrame(this.animationLoop);
+    this.stats.update();
+    
   };
 
   handleWindowResize = () => {
