@@ -9,14 +9,14 @@ import glbAsset from "../../assets/glb/piqhx0.glb"; //Zipped GLTF AR Asset
 
 const style = {
     height: "1000px",
-    width: "95%" // we can control scene size by setting container dimensions
+    width: "100%" // we can control scene size by setting container dimensions
 };
 
 class Shade extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      AAStatus: true, //Enables Anti-Aliasing on the OpenGL Renderer 
+      AAStatus: true, //Enables Anti-Aliasing on the OpenGL Renderer
       PCStatus: true, //Enables Physically Correct Lighting
     };
   }
@@ -36,8 +36,8 @@ class Shade extends Component {
     this.handleCameraControls();
     this.animationLoop();
     this.renderLoop();
-    /*Set is used for "invisible" high-level scene construction. 
-    Start is used for objects in said scene. 
+    /*Set is used for "invisible" high-level scene construction.
+    Start is used for objects in said scene.
     Handle is for making later changes to a set/start, or when an external file (glb, hdr) is used in the method
     Loops do not have prefixes
     */
@@ -63,7 +63,7 @@ class Shade extends Component {
   startCamera = () => {
     console.log('startCamera initiated');
     this.camera = new THREE.PerspectiveCamera(75,this.width / this.height,0.2,300);
-    this.camera.position.set( 0, 20, 20 ); 
+    this.camera.position.set( 0, 20, 20 );
   };
 
   setRenderer = () => {
@@ -111,7 +111,7 @@ class Shade extends Component {
 
   handleEnvironment = () => {
     console.log('handleEnvironment initiated');
-    
+
     const pmremGeneratorTest = new THREE.PMREMGenerator(this.renderer);
 
     new RGBELoader()
@@ -119,7 +119,7 @@ class Shade extends Component {
     .load(hdrENV, (texture) => {
     	var envMap = pmremGeneratorTest.fromEquirectangular(texture).texture;
     	pmremGeneratorTest.dispose();
-    	
+
     	this.scene.environment = envMap;
     }
     );
@@ -128,7 +128,7 @@ class Shade extends Component {
 
   handleBackground = () => {
     console.log('handleBackground initiated');
-    
+
     const pmremGeneratorTest = new THREE.PMREMGenerator(this.renderer);
 
     new RGBELoader()
@@ -136,7 +136,7 @@ class Shade extends Component {
     .load(hdrBKD, (texture) => {
     	var envMap = pmremGeneratorTest.fromEquirectangular(texture).texture;
     	pmremGeneratorTest.dispose();
-    	
+
     	this.scene.background = envMap;
     }
     );
@@ -153,7 +153,7 @@ class Shade extends Component {
 
   startRefGeo = () => {
     console.log('startRefGeo initiated');
-    
+
     const geometry = new THREE.BoxGeometry(2, 2, 2);
     const material = new THREE.MeshStandardMaterial( {
       color: 0x156289,
@@ -163,7 +163,7 @@ class Shade extends Component {
       side: THREE.DoubleSide,
       flatShading: false
     });
-    
+
     this.cube = new THREE.Mesh(geometry, material);
     this.cube.position.set(15,0,0);
     this.scene.add(this.cube);

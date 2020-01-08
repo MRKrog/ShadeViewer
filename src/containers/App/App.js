@@ -7,7 +7,7 @@ class App extends Component {
   constructor() {
     super()
     this.state = {
-      isMounted: false
+      isMounted: true
     }
   }
 
@@ -21,17 +21,12 @@ class App extends Component {
     const { isMounted } = this.state;
 
     return (
-      <div className="App" style={{ backgroundImage: `url(${bgImage})` }}>
+      <div className="App">
         {
-          isMounted ? (
+          isMounted &&
           <div className="modal">
              <Shade />
           </div>
-          ) : (
-          <button className="AppBtn" onClick={() => this.handleMount()}>
-              {isMounted ? "Exit" : "Modalize dez nuts"}
-          </button>
-          )
         }
       </div>
     )
