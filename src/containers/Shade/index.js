@@ -23,6 +23,7 @@ class Shade extends Component {
 
    componentDidMount() {
     console.log('You reached componentDidMount');
+    this.getVariant();
     this.setScene();
     this.startCamera();
     this.setRenderer();
@@ -51,6 +52,11 @@ class Shade extends Component {
     window.cancelAnimationFrame(this.requestID);
     this.controls.dispose();
   };
+
+  getVariant = () => {
+    const variantID = this.state.selectedVariantId;
+    console.log("LevarBen", variantID);
+  }
 
   setScene = () => {
     console.log('setScene initiated');
@@ -145,7 +151,6 @@ class Shade extends Component {
 
   handleGLTF = () => {
     console.log('handleGLTF initiated');
-    console.log("this is from react Ben", ShopifyAnalytics.meta.selectedVariantId);
     new GLTFLoader().load(glbAsset, (glb) => {
   		this.scene.add(glb.scene);
   	});
