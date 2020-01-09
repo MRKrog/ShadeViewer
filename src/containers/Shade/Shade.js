@@ -6,8 +6,11 @@ import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
+import { RectAreaLightUniformsLib } from 'three/examples/jsm/lights/RectAreaLightUniformsLib.js';
+import { RectAreaLightHelper } from 'three/examples/jsm/helpers/RectAreaLightHelper.js';
+
 import hdrBKD from "../../assets/apple_1k.hdr"; //Environment (lights objects)
-import hdrENV from "../../assets/umbrellas_1k.hdr";  //Background (visible in viewport)
+import hdrENV from "../../assets/autoshop_1k.hdr";  //Background (visible in viewport)
 import glbAsset from "../../assets/glb/m2tlya.glb"; //Zipped GLTF AR Asset
 
 const style = {
@@ -21,8 +24,9 @@ class Shade extends Component {
     this.state = {
       AAStatus: true, //Enables Anti-Aliasing on the OpenGL Renderer
       PCStatus: true, //Enables Physically Correct Lighting
+      StatsStatus: "",
+      LightHelperStatus: true,
 
-      statsLive: "",
     };
   }
 
@@ -61,7 +65,7 @@ class Shade extends Component {
   startStats = () => {
     console.log('startStats initiated');
     this.stats = new Stats();
-    this.statsLive = true;
+    this.StatsStatus = true;
     this.mount.appendChild( this.stats.dom );
   }
   setScene = () => {
@@ -73,7 +77,7 @@ class Shade extends Component {
 
   startCamera = () => {
     console.log('startCamera initiated');
-    this.camera = new THREE.PerspectiveCamera(75,this.width / this.height,0.2,300);
+    this.camera = new THREE.PerspectiveCamera(75,this.width / this.height,0.2,3000);
   };
 
   setRenderer = () => {
@@ -93,25 +97,64 @@ class Shade extends Component {
 
   startLighting = () => {
     console.log('startLighting initiated');
-    const standaLight = [];
-    standaLight[0] = new THREE.PointLight(0xffd6d6,300,200,2);
-    standaLight[1] = new THREE.PointLight(0xd7d6ff,300,200,2);
-    standaLight[2] = new THREE.PointLight(0xffd6d6,300,200,2);
-    standaLight[3] = new THREE.PointLight(0xd7d6ff,300,200,2);
-    standaLight[4] = new THREE.PointLight(0xffd6d6,300,200,2);
-    standaLight[5] = new THREE.PointLight(0xd7d6ff,300,200,2);
+    
+    RectAreaLightUniformsLib.init();
+    
+    const rectLight = [];
+    const rectLightHelper = [];
+    const { LightHelperStatus } = this.state;
 
-    standaLight[0].position.set(0,10,30);
-    standaLight[1].position.set(0,10,-30);
-    standaLight[2].position.set(30,10,0);
-    standaLight[3].position.set(-30,10,0);
-    standaLight[4].position.set(0,35,0);
-    standaLight[5].position.set(0,-15,0);
+    const rectlLightColor = 0xFFFFFF;
+    const rectlLightColorblue = 0x0000FF;
+    const rectlLightColororange = 0xFFA500;
+    const rectLightIntensity = 70;
+    const rectLightWidth = 20;
+    const rectLightHeight = 10;
 
+    rectLight[0] = new THREE.RectAreaLight(rectlLightColor, rectLightIntensity, rectLightWidth, rectLightHeight);
+    rectLight[0].position.set(0, 80, 0);
+    rectLight[0].rotation.x = THREE.Math.degToRad(-90);
+    rectLightHelper[0] = new RectAreaLightHelper(rectLight[0]);
+    rectLight[0].add(rectLightHelper[0]);
 
-    console.log(standaLight)
+    rectLight[1] = new THREE.RectAreaLight(rectlLightColor, rectLightIntensity, rectLightWidth, rectLightHeight);
+    rectLight[1].position.set(0, -60, 0);
+    rectLight[1].rotation.x = THREE.Math.degToRad(90);
+    rectLightHelper[1] = new RectAreaLightHelper(rectLight[1]);
 
-    standaLight.forEach(i => {
+    rectLight[2] = new THREE.RectAreaLight(rectlLightColororange, rectLightIntensity, rectLightWidth, rectLightHeight);
+    rectLight[2].position.set(60, 35, 60);
+    rectLight[2].rotation.z = THREE.Math.degToRad(90);
+    rectLight[2].rotation.y = THREE.Math.degToRad(45);
+    rectLightHelper[2] = new RectAreaLightHelper(rectLight[2]);
+
+    rectLight[3] = new THREE.RectAreaLight(rectlLightColorblue, rectLightIntensity, rectLightWidth, rectLightHeight);
+    rectLight[3].position.set(60, -5, -60);
+    rectLight[3].rotation.z = THREE.Math.degToRad(90);
+    rectLight[3].rotation.y = THREE.Math.degToRad(135);
+    rectLightHelper[3] = new RectAreaLightHelper(rectLight[3]);
+    
+    rectLight[4] = new THREE.RectAreaLight(rectlLightColorblue, rectLightIntensity, rectLightWidth, rectLightHeight);
+    rectLight[4].position.set(-60, -5, 60);
+    rectLight[4].rotation.z = THREE.Math.degToRad(90);
+    rectLight[4].rotation.y = THREE.Math.degToRad(-45);
+    rectLightHelper[4] = new RectAreaLightHelper(rectLight[4]);
+    
+    rectLight[5] = new THREE.RectAreaLight(rectlLightColororange, rectLightIntensity, rectLightWidth, rectLightHeight);
+    rectLight[5].position.set(-60, 35, -60);
+    rectLight[5].rotation.z = THREE.Math.degToRad(90);
+    rectLight[5].rotation.y = THREE.Math.degToRad(-135);
+    rectLightHelper[5] = new RectAreaLightHelper(rectLight[5]);
+
+    if (LightHelperStatus) {
+      rectLight[1].add(rectLightHelper[1]);
+      rectLight[2].add(rectLightHelper[2]);
+      rectLight[3].add(rectLightHelper[3]);
+      rectLight[4].add(rectLightHelper[4]);
+      rectLight[5].add(rectLightHelper[5]);
+    }
+
+    rectLight.forEach(i => {
       i.castShadow = true;
       this.scene.add(i);
     })
@@ -168,11 +211,9 @@ class Shade extends Component {
   startRefGeo = () => {
     console.log('startRefGeo initiated');
 
-    const heroGeometry = new THREE.SphereGeometry(3, 32, 32);
+    const heroGeometry = new THREE.SphereGeometry(4, 64, 64);
 
-    const lightGeometry = new THREE.BoxGeometry(1,1,1);
-
-    const heroMaterial = new THREE.MeshStandardMaterial( {
+    const heroMaterialMirror = new THREE.MeshStandardMaterial( {
       color: 0x7C7C7C,
       metalness: 1,
       roughness: 0,
@@ -180,50 +221,31 @@ class Shade extends Component {
       flatShading: false
     });
 
-    const wLightMaterial = new THREE.MeshStandardMaterial( {
-      color: 0xFF7E00,
+    const heroMaterialFlat = new THREE.MeshStandardMaterial( {
+      color: 0x7C7C7C,
       metalness: 0,
-      roughness: 1,
-      emissive: 0xFF7E00,
+      roughness: 0.8,
       side: THREE.DoubleSide,
       flatShading: false
     });
 
-    const cLightMaterial = new THREE.MeshStandardMaterial( {
-      color: 0x0048BA,
+    const heroMaterialGlossy = new THREE.MeshStandardMaterial( {
+      color: 0x7C7C7C,
       metalness: 0,
-      roughness: 1,
-      emissive: 0x0048BA,
+      roughness: 0.05,
       side: THREE.DoubleSide,
       flatShading: false
     });
 
-    this.heroCube = new THREE.Mesh(heroGeometry, heroMaterial);
+    this.heroSphereMirror = new THREE.Mesh(heroGeometry, heroMaterialMirror);
+    this.heroSphereMirror.position.set(0,-10,0);
 
-    this.lightCube1 = new THREE.Mesh(lightGeometry, wLightMaterial);
-    this.lightCube2 = new THREE.Mesh(lightGeometry, cLightMaterial);
-    this.lightCube3 = new THREE.Mesh(lightGeometry, wLightMaterial);
-    this.lightCube4 = new THREE.Mesh(lightGeometry, cLightMaterial);
-    this.lightCube5 = new THREE.Mesh(lightGeometry, wLightMaterial);
-    this.lightCube6 = new THREE.Mesh(lightGeometry, cLightMaterial);
+    this.heroSphereFlat = new THREE.Mesh(heroGeometry, heroMaterialFlat);
+    this.heroSphereFlat.position.set(0,-10,12);
 
-    this.heroCube.position.set(0,10,0);
-
-    this.lightCube1.position.set(0,10,30);
-    this.lightCube2.position.set(0,10,-30);
-    this.lightCube3.position.set(30,10,0);
-    this.lightCube4.position.set(-30,10,0);
-    this.lightCube5.position.set(0,35,0);
-    this.lightCube6.position.set(0,-15,0);
-
-    this.scene.add(this.heroCube);
-
-    this.scene.add(this.lightCube1);
-    this.scene.add(this.lightCube2);
-    this.scene.add(this.lightCube3);
-    this.scene.add(this.lightCube4);
-    this.scene.add(this.lightCube5);
-    this.scene.add(this.lightCube6);
+    this.heroSphereGlossy = new THREE.Mesh(heroGeometry, heroMaterialGlossy);
+    this.heroSphereGlossy.position.set(0,-10,-12);
+    this.scene.add(this.heroSphereMirror, this.heroSphereFlat, this.heroSphereGlossy);
   };
 
   handleCameraControls = () => {
@@ -246,7 +268,7 @@ class Shade extends Component {
   renderLoop = () => {
     this.requestID = window.requestAnimationFrame(this.renderLoop);
     this.levARcomposer.render();
-    if (this.statsLive) {
+    if (this.StatsStatus) {
       this.stats.update();
     }
   };
