@@ -1,0 +1,26 @@
+.ScreenLoader {
+  z-index: 9999;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  background: #231f20;
+  background: linear-gradient(45deg, #231f20 0%, #424242 50%, #231f20 100%);
+
+  .Loading-logo {
+    animation: Loading-logo-spin infinite 1s ease-in-out;
+    height: 25vmin;
+    pointer-events: none;
+    color: #fff;
+  }
+
+  @keyframes Loading-logo-spin {
+    0% {
+      transform: perspective(500px) rotateY(0deg);
+    } 100% {
+      transform: perspective(500px) rotateY(360deg);
+    }
+  }
+}

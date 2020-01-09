@@ -33,7 +33,7 @@ class Shade extends Component {
     this.setControls();
     this.startLighting();
     this.setEnvironment(); //Renderer settings relevant to handleEnvinronment()
-    this.handleEnvironment(); //Loads Environment 
+    this.handleEnvironment(); //Loads Environment
     this.handleBackground(); //Loads Background
     this.handleGLTF();
     this.startRefGeo();
@@ -100,7 +100,7 @@ class Shade extends Component {
     standaLight[1].position.set(20,10,0);
     standaLight[2].position.set(0,10,-20);
     standaLight[3].position.set(-20,10,0);
-    
+
 
     console.log(standaLight)
 
@@ -112,7 +112,7 @@ class Shade extends Component {
 
   setEnvironment = () => {
     console.log('setEnvironment initiated');
-    
+
     const { PCStatus } = this.state;
     this.renderer.physicallyCorrectLights = PCStatus;
 
@@ -140,7 +140,6 @@ class Shade extends Component {
   handleBackground = () => {
     console.log('handleBackground initiated');
 
-    this.levARpmremGenerator = new THREE.PMREMGenerator(this.renderer);
 
     new RGBELoader()
     .setDataType(THREE.UnsignedByteType)
@@ -201,7 +200,7 @@ class Shade extends Component {
     this.lightCube4.position.set(-20,10,0);
 
     this.scene.add(this.heroCube);
-    
+
     this.scene.add(this.lightCube1);
     this.scene.add(this.lightCube2);
     this.scene.add(this.lightCube3);
