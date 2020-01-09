@@ -6,9 +6,9 @@ import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
-import hdrBKD from "../../assets/overpass_1k.hdr"; //Environment (lights objects)
-import hdrENV from "../../assets/bridge_1k.hdr";  //Background (visible in viewport)
-import glbAsset from "../../assets/glb/piqhx0.glb"; //Zipped GLTF AR Asset
+import hdrBKD from "../../assets/apple_1k.hdr"; //Environment (lights objects)
+import hdrENV from "../../assets/umbrellas_1k.hdr";  //Background (visible in viewport)
+import glbAsset from "../../assets/glb/m2tlya.glb"; //Zipped GLTF AR Asset
 
 const style = {
     height: "1000px",
@@ -94,12 +94,12 @@ class Shade extends Component {
   startLighting = () => {
     console.log('startLighting initiated');
     const standaLight = [];
-    standaLight[0] = new THREE.PointLight(0xffd6d6,800,200,2);
-    standaLight[1] = new THREE.PointLight(0xd7d6ff,800,200,2);
-    standaLight[2] = new THREE.PointLight(0xffd6d6,800,200,2);
-    standaLight[3] = new THREE.PointLight(0xd7d6ff,800,200,2);
-    standaLight[4] = new THREE.PointLight(0xffd6d6,800,200,2);
-    standaLight[5] = new THREE.PointLight(0xd7d6ff,800,200,2);
+    standaLight[0] = new THREE.PointLight(0xffd6d6,300,200,2);
+    standaLight[1] = new THREE.PointLight(0xd7d6ff,300,200,2);
+    standaLight[2] = new THREE.PointLight(0xffd6d6,300,200,2);
+    standaLight[3] = new THREE.PointLight(0xd7d6ff,300,200,2);
+    standaLight[4] = new THREE.PointLight(0xffd6d6,300,200,2);
+    standaLight[5] = new THREE.PointLight(0xd7d6ff,300,200,2);
 
     standaLight[0].position.set(0,10,30);
     standaLight[1].position.set(0,10,-30);
@@ -168,7 +168,7 @@ class Shade extends Component {
   startRefGeo = () => {
     console.log('startRefGeo initiated');
 
-    const heroGeometry = new THREE.BoxGeometry(2,2,2);
+    const heroGeometry = new THREE.SphereGeometry(3, 32, 32);
 
     const lightGeometry = new THREE.BoxGeometry(1,1,1);
 
