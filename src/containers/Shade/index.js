@@ -145,7 +145,7 @@ class Shade extends Component {
 
   handleGLTF = () => {
     console.log('handleGLTF initiated');
-
+    console.log("this is from react Ben", ShopifyAnalytics.meta.selectedVariantId);
     new GLTFLoader().load(glbAsset, (glb) => {
   		this.scene.add(glb.scene);
   	});
