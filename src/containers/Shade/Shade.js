@@ -6,8 +6,8 @@ import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
-import hdrENV from "../../assets/overpass_1k.hdr"; //Environment (lights objects)
-import hdrBKD from "../../assets/bridge_1k.hdr";  //Background (visible in viewport)
+import hdrBKD from "../../assets/overpass_1k.hdr"; //Environment (lights objects)
+import hdrENV from "../../assets/bridge_1k.hdr";  //Background (visible in viewport)
 import glbAsset from "../../assets/glb/piqhx0.glb"; //Zipped GLTF AR Asset
 
 const style = {
@@ -21,6 +21,8 @@ class Shade extends Component {
     this.state = {
       AAStatus: true, //Enables Anti-Aliasing on the OpenGL Renderer
       PCStatus: true, //Enables Physically Correct Lighting
+
+      statsLive: "",
     };
   }
 
@@ -59,6 +61,7 @@ class Shade extends Component {
   startStats = () => {
     console.log('startStats initiated');
     this.stats = new Stats();
+    this.statsLive = true;
     this.mount.appendChild( this.stats.dom );
   }
   setScene = () => {
@@ -91,15 +94,19 @@ class Shade extends Component {
   startLighting = () => {
     console.log('startLighting initiated');
     const standaLight = [];
-    standaLight[0] = new THREE.PointLight(0xffffff,300,40,2);
-    standaLight[1] = new THREE.PointLight(0xffffff,300,40,2);
-    standaLight[2] = new THREE.PointLight(0xffffff,300,40,2);
-    standaLight[3] = new THREE.PointLight(0xffffff,300,40,2);
+    standaLight[0] = new THREE.PointLight(0xffd6d6,800,200,2);
+    standaLight[1] = new THREE.PointLight(0xd7d6ff,800,200,2);
+    standaLight[2] = new THREE.PointLight(0xffd6d6,800,200,2);
+    standaLight[3] = new THREE.PointLight(0xd7d6ff,800,200,2);
+    standaLight[4] = new THREE.PointLight(0xffd6d6,800,200,2);
+    standaLight[5] = new THREE.PointLight(0xd7d6ff,800,200,2);
 
-    standaLight[0].position.set(0,10,20);
-    standaLight[1].position.set(20,10,0);
-    standaLight[2].position.set(0,10,-20);
-    standaLight[3].position.set(-20,10,0);
+    standaLight[0].position.set(0,10,30);
+    standaLight[1].position.set(0,10,-30);
+    standaLight[2].position.set(30,10,0);
+    standaLight[3].position.set(-30,10,0);
+    standaLight[4].position.set(0,35,0);
+    standaLight[5].position.set(0,-15,0);
 
 
     console.log(standaLight)
@@ -115,15 +122,13 @@ class Shade extends Component {
 
     const { PCStatus } = this.state;
     this.renderer.physicallyCorrectLights = PCStatus;
-
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
     this.renderer.outputEncoding = THREE.sRGBEncoding;
+    this.levARpmremGenerator = new THREE.PMREMGenerator(this.renderer);
   };
 
   handleEnvironment = () => {
     console.log('handleEnvironment initiated');
-
-    this.levARpmremGenerator = new THREE.PMREMGenerator(this.renderer);
 
     new RGBELoader()
     .setDataType(THREE.UnsignedByteType)
@@ -139,7 +144,6 @@ class Shade extends Component {
 
   handleBackground = () => {
     console.log('handleBackground initiated');
-
 
     new RGBELoader()
     .setDataType(THREE.UnsignedByteType)
@@ -176,28 +180,41 @@ class Shade extends Component {
       flatShading: false
     });
 
-    const lightMaterial = new THREE.MeshStandardMaterial( {
-      color: 0xFFFF00,
+    const wLightMaterial = new THREE.MeshStandardMaterial( {
+      color: 0xFF7E00,
       metalness: 0,
       roughness: 1,
-      emissive: 0xFFFF00,
+      emissive: 0xFF7E00,
+      side: THREE.DoubleSide,
+      flatShading: false
+    });
+
+    const cLightMaterial = new THREE.MeshStandardMaterial( {
+      color: 0x0048BA,
+      metalness: 0,
+      roughness: 1,
+      emissive: 0x0048BA,
       side: THREE.DoubleSide,
       flatShading: false
     });
 
     this.heroCube = new THREE.Mesh(heroGeometry, heroMaterial);
 
-    this.lightCube1 = new THREE.Mesh(lightGeometry, lightMaterial);
-    this.lightCube2 = new THREE.Mesh(lightGeometry, lightMaterial);
-    this.lightCube3 = new THREE.Mesh(lightGeometry, lightMaterial);
-    this.lightCube4 = new THREE.Mesh(lightGeometry, lightMaterial);
+    this.lightCube1 = new THREE.Mesh(lightGeometry, wLightMaterial);
+    this.lightCube2 = new THREE.Mesh(lightGeometry, cLightMaterial);
+    this.lightCube3 = new THREE.Mesh(lightGeometry, wLightMaterial);
+    this.lightCube4 = new THREE.Mesh(lightGeometry, cLightMaterial);
+    this.lightCube5 = new THREE.Mesh(lightGeometry, wLightMaterial);
+    this.lightCube6 = new THREE.Mesh(lightGeometry, cLightMaterial);
 
     this.heroCube.position.set(0,10,0);
 
-    this.lightCube1.position.set(0,10,20);
-    this.lightCube2.position.set(20,10,0);
-    this.lightCube3.position.set(0,10,-20);
-    this.lightCube4.position.set(-20,10,0);
+    this.lightCube1.position.set(0,10,30);
+    this.lightCube2.position.set(0,10,-30);
+    this.lightCube3.position.set(30,10,0);
+    this.lightCube4.position.set(-30,10,0);
+    this.lightCube5.position.set(0,35,0);
+    this.lightCube6.position.set(0,-15,0);
 
     this.scene.add(this.heroCube);
 
@@ -205,6 +222,8 @@ class Shade extends Component {
     this.scene.add(this.lightCube2);
     this.scene.add(this.lightCube3);
     this.scene.add(this.lightCube4);
+    this.scene.add(this.lightCube5);
+    this.scene.add(this.lightCube6);
   };
 
   handleCameraControls = () => {
@@ -227,7 +246,9 @@ class Shade extends Component {
   renderLoop = () => {
     this.requestID = window.requestAnimationFrame(this.renderLoop);
     this.levARcomposer.render();
-    this.stats.update();
+    if (this.statsLive) {
+      this.stats.update();
+    }
   };
 
   handleWindowResize = () => {
