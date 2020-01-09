@@ -8,7 +8,7 @@ import hdrBKD from "../../assets/bridge_1k.hdr";  //Background (visible in viewp
 import glbAsset from "../../assets/glb/piqhx0.glb"; //Zipped GLTF AR Asset
 
 const style = {
-    height: "1000px",
+    height: "100%",
     width: "100%" // we can control scene size by setting container dimensions
 };
 
