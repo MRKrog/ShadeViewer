@@ -17,6 +17,7 @@ import glbAsset from "../../assets/glb/m2tlya.glb"; //Zipped GLTF AR Asset
 const style = {
     height: "1000px",
     width: "100%"
+    
 };
 
 class Shade extends Component {
@@ -25,7 +26,6 @@ class Shade extends Component {
     this.state = {
       StatsStatus: "",
       LightHelperStatus: true,
-
     };
   }
 
@@ -35,7 +35,6 @@ class Shade extends Component {
     this.setScene();
     this.startCamera();
     this.setRenderer();
-    this.startUI();
     this.setControls();
     this.startLighting();
     this.setEnvironment(); //Renderer settings relevant to handleEnvinronment()
@@ -45,6 +44,7 @@ class Shade extends Component {
     this.startRefGeo();
     this.handleCameraControls();
     this.setPostProcessing();
+    this.startUI();
     this.renderLoop();
     /*Set is used for "invisible" high-level scene construction.
     Start is used for objects in said scene.
@@ -100,15 +100,6 @@ class Shade extends Component {
     this.mount.appendChild(this.renderer.domElement); // mount using React ref
   };
 
-  startUI = () => {
-    var FizzyText = function() {
-      this.message = 'dat.gui';
-    };
-    var text = new FizzyText();
-    var gui = new dat.GUI();
-    gui.add(text, 'message');
-  }
-
   setControls = () => {
     console.log('setControls initiated');
     this.controls = new OrbitControls(this.camera,this.mount);
@@ -116,7 +107,6 @@ class Shade extends Component {
 
   startLighting = () => {
     console.log('startLighting initiated');
-
     if (this.perfStatus < 2) {
       RectAreaLightUniformsLib.init();
     
@@ -295,12 +285,44 @@ class Shade extends Component {
     this.levARcomposer.addPass( new RenderPass( this.scene, this.camera ) );
   };
 
+  startUI = () => {
+    this.gfxParams = function() {
+      this.perfStatus = "";
+      this.hotTake = 2;
+    };
+
+    this.gfx = new this.gfxParams();
+
+    const gui = this.gui = new dat.GUI({autoPlace: true, width: 260, hideable: true});
+  
+    var controller = gui.add(this.gfx, 'perfStatus', { HighLinear: 0, HighSRGB: 1, LowSRGB: 2 } );
+    controller.onChange(function(value) {
+      // Fires when a controller loses focus.
+      this.perfStatus = value;
+      console.log("I'm example bees shit");
+      console.log("perfStatus = " + this.perfStatus);
+    });
+    controller.onFinishChange(() => this.exampleShit());
+    
+
+    gui.open();
+  }
+
+  exampleShit = () => {
+    console.log("I'm example shit");
+    console.log("perfStatus = " + this.perfStatus);
+    console.log("hot Take = " + this.hotTake);
+
+
+  }
+
   renderLoop = () => {
     this.requestID = window.requestAnimationFrame(this.renderLoop);
     this.levARcomposer.render();
     if (this.StatsStatus) {
       this.stats.update();
     }
+    // console.log(this.perfStatus);
   };
 
   handleWindowResize = () => {
