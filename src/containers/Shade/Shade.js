@@ -11,8 +11,13 @@ import hdrBKD from "../../assets/bridge_1k.hdr";  //Background (visible in viewp
 import glbAsset from "../../assets/glb/piqhx0.glb"; //Zipped GLTF AR Asset
 
 const style = {
+<<<<<<< HEAD:src/containers/Shade/Shade.js
     height: "1000px",
     width: "100%"
+=======
+    height: "100%",
+    width: "100%" // we can control scene size by setting container dimensions
+>>>>>>> 8e00dc4ac453a5f9b52310c7d8644501b45f4b6c:src/containers/Shade/index.js
 };
 
 class Shade extends Component {
@@ -56,11 +61,15 @@ class Shade extends Component {
     this.controls.dispose();
   };
 
+<<<<<<< HEAD:src/containers/Shade/Shade.js
   startStats = () => {
     console.log('startStats initiated');
     this.stats = new Stats();
     this.mount.appendChild( this.stats.dom );
   }
+=======
+
+>>>>>>> 8e00dc4ac453a5f9b52310c7d8644501b45f4b6c:src/containers/Shade/index.js
   setScene = () => {
     console.log('setScene initiated');
     this.width = this.mount.clientWidth;
@@ -155,7 +164,6 @@ class Shade extends Component {
 
   handleGLTF = () => {
     console.log('handleGLTF initiated');
-
     new GLTFLoader().load(glbAsset, (glb) => {
   		this.scene.add(glb.scene);
   	});
