@@ -4,6 +4,7 @@ import ReactDOM from 'react-dom';
 import { rootReducer } from './redux/reducers';
 import { createStore, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
+import { BrowserRouter as Router } from "react-router-dom";
 
 import { composeWithDevTools } from 'redux-devtools-extension';
 import thunk from 'redux-thunk';
@@ -19,15 +20,12 @@ const store = createStore(
 
 const shadeFlow = (
   <Provider store={store}>
+    <Router>
       <App />
+    </Router>
   </Provider>
 )
 
 
-<<<<<<< HEAD
 ReactDOM.render(shadeFlow, document.getElementById('root'));
 serviceWorker.unregister();
-=======
-ReactDOM.render(<App />, document.getElementById('root'));
-serviceWorker.unregister();
->>>>>>> 8e00dc4ac453a5f9b52310c7d8644501b45f4b6c
