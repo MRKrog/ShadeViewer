@@ -23,7 +23,6 @@ class Shade extends Component {
 
    componentDidMount() {
     console.log('You reached componentDidMount');
-    this.getVariant();
     this.setScene();
     this.startCamera();
     this.setRenderer();
@@ -53,10 +52,6 @@ class Shade extends Component {
     this.controls.dispose();
   };
 
-  getVariant = () => {
-    const variantID = this.state.selectedVariantId;
-    console.log("LevarBen", variantID);
-  }
 
   setScene = () => {
     console.log('setScene initiated');
