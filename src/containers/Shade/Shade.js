@@ -6,9 +6,11 @@ import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
+
 import hdrENV from "../../assets/overpass_1k.hdr"; //Environment (lights objects)
 import hdrBKD from "../../assets/bridge_1k.hdr";  //Background (visible in viewport)
 import glbAsset from "../../assets/glb/piqhx0.glb"; //Zipped GLTF AR Asset
+import glbAssetNew from "../../assets/glb/31685891293277.glb"; //Zipped GLTF AR Asset
 
 const style = {
     height: "1000px",
@@ -155,8 +157,13 @@ class Shade extends Component {
 
   handleGLTF = () => {
     // console.log('handleGLTF initiated');
+    console.log(this.props.url);
+    // https://shopifydependencies.s3.amazonaws.com/ar/31685891293277.glb
+    // 'http://innopizza.s3-eu-west-2.amazonaws.com/'
+    // this.props.url
 
-    new GLTFLoader().load(glbAsset, (glb) => {
+
+    new GLTFLoader().load(this.props.url, (glb) => {
   		this.scene.add(glb.scene);
   	});
   };
