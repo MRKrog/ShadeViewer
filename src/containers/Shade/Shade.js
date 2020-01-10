@@ -156,7 +156,7 @@ class Shade extends Component {
 
   handleGLTF = () => {
     console.log('handleGLTF initiated');
-    new GLTFLoader().load(glbAsset, (glb) => {
+    new GLTFLoader().load(this.props.url, (glb) => {
   		this.scene.add(glb.scene);
   	});
   };
