@@ -8,6 +8,7 @@ import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
 import { RectAreaLightUniformsLib } from 'three/examples/jsm/lights/RectAreaLightUniformsLib.js';
 import { RectAreaLightHelper } from 'three/examples/jsm/helpers/RectAreaLightHelper.js';
+import * as dat from 'dat.gui';
 
 import hdrBKD from "../../assets/apple_1k.hdr"; //Environment (lights objects)
 import hdrENV from "../../assets/autoshop_1k.hdr";  //Background (visible in viewport)
@@ -22,8 +23,6 @@ class Shade extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      AAStatus: true, //Enables Anti-Aliasing on the OpenGL Renderer
-      PCStatus: true, //Enables Physically Correct Lighting
       StatsStatus: "",
       LightHelperStatus: true,
 
@@ -36,6 +35,7 @@ class Shade extends Component {
     this.setScene();
     this.startCamera();
     this.setRenderer();
+    this.startUI();
     this.setControls();
     this.startLighting();
     this.setEnvironment(); //Renderer settings relevant to handleEnvinronment()
@@ -70,6 +70,7 @@ class Shade extends Component {
   }
   setScene = () => {
     console.log('setScene initiated');
+    this.perfStatus = 0; //0 = Linear High, 1 = sRGB High, 2 = sRGB Low
     this.width = this.mount.clientWidth;
     this.height = this.mount.clientHeight;
     this.scene = new THREE.Scene();
@@ -82,13 +83,31 @@ class Shade extends Component {
 
   setRenderer = () => {
     console.log('setRenderer initiated');
-    const { AAStatus } = this.state;
-    this.renderer = new THREE.WebGLRenderer( { antialias: AAStatus } );
+
+  if (this.perfStatus === 0) {
+    this.renderer = new THREE.WebGLRenderer( { antialias: true } );
+    console.log('High Linear Spec Renderer Set');
+  } else if (this.perfStatus === 1) {
+    this.renderer = new THREE.WebGLRenderer( { antialias: true } );
+    console.log('High sRGB Spec Renderer Set');
+  } else if (this.perfStatus === 2) {
+    this.renderer = new THREE.WebGLRenderer( { antialias: false } );
+    console.log('Low sRGB Spec Renderer Set');
+  } 
 
     this.renderer.setSize(this.width,this.height);
     this.renderer.setPixelRatio(window.devicePixelRatio);
     this.mount.appendChild(this.renderer.domElement); // mount using React ref
   };
+
+  startUI = () => {
+    var FizzyText = function() {
+      this.message = 'dat.gui';
+    };
+    var text = new FizzyText();
+    var gui = new dat.GUI();
+    gui.add(text, 'message');
+  }
 
   setControls = () => {
     console.log('setControls initiated');
@@ -97,77 +116,88 @@ class Shade extends Component {
 
   startLighting = () => {
     console.log('startLighting initiated');
+
+    if (this.perfStatus < 2) {
+      RectAreaLightUniformsLib.init();
     
-    RectAreaLightUniformsLib.init();
-    
-    const rectLight = [];
-    const rectLightHelper = [];
-    const { LightHelperStatus } = this.state;
-
-    const rectlLightColor = 0xFFFFFF;
-    const rectlLightColorblue = 0x0000FF;
-    const rectlLightColororange = 0xFFA500;
-    const rectLightIntensity = 70;
-    const rectLightWidth = 20;
-    const rectLightHeight = 10;
-
-    rectLight[0] = new THREE.RectAreaLight(rectlLightColor, rectLightIntensity, rectLightWidth, rectLightHeight);
-    rectLight[0].position.set(0, 80, 0);
-    rectLight[0].rotation.x = THREE.Math.degToRad(-90);
-    rectLightHelper[0] = new RectAreaLightHelper(rectLight[0]);
-    rectLight[0].add(rectLightHelper[0]);
-
-    rectLight[1] = new THREE.RectAreaLight(rectlLightColor, rectLightIntensity, rectLightWidth, rectLightHeight);
-    rectLight[1].position.set(0, -60, 0);
-    rectLight[1].rotation.x = THREE.Math.degToRad(90);
-    rectLightHelper[1] = new RectAreaLightHelper(rectLight[1]);
-
-    rectLight[2] = new THREE.RectAreaLight(rectlLightColororange, rectLightIntensity, rectLightWidth, rectLightHeight);
-    rectLight[2].position.set(60, 35, 60);
-    rectLight[2].rotation.z = THREE.Math.degToRad(90);
-    rectLight[2].rotation.y = THREE.Math.degToRad(45);
-    rectLightHelper[2] = new RectAreaLightHelper(rectLight[2]);
-
-    rectLight[3] = new THREE.RectAreaLight(rectlLightColorblue, rectLightIntensity, rectLightWidth, rectLightHeight);
-    rectLight[3].position.set(60, -5, -60);
-    rectLight[3].rotation.z = THREE.Math.degToRad(90);
-    rectLight[3].rotation.y = THREE.Math.degToRad(135);
-    rectLightHelper[3] = new RectAreaLightHelper(rectLight[3]);
-    
-    rectLight[4] = new THREE.RectAreaLight(rectlLightColorblue, rectLightIntensity, rectLightWidth, rectLightHeight);
-    rectLight[4].position.set(-60, -5, 60);
-    rectLight[4].rotation.z = THREE.Math.degToRad(90);
-    rectLight[4].rotation.y = THREE.Math.degToRad(-45);
-    rectLightHelper[4] = new RectAreaLightHelper(rectLight[4]);
-    
-    rectLight[5] = new THREE.RectAreaLight(rectlLightColororange, rectLightIntensity, rectLightWidth, rectLightHeight);
-    rectLight[5].position.set(-60, 35, -60);
-    rectLight[5].rotation.z = THREE.Math.degToRad(90);
-    rectLight[5].rotation.y = THREE.Math.degToRad(-135);
-    rectLightHelper[5] = new RectAreaLightHelper(rectLight[5]);
-
-    if (LightHelperStatus) {
-      rectLight[1].add(rectLightHelper[1]);
-      rectLight[2].add(rectLightHelper[2]);
-      rectLight[3].add(rectLightHelper[3]);
-      rectLight[4].add(rectLightHelper[4]);
-      rectLight[5].add(rectLightHelper[5]);
+      const rectLight = [];
+      const rectLightHelper = [];
+      const { LightHelperStatus } = this.state;
+  
+      const rectlLightColor = 0xFFFFFF;
+      const rectlLightColorblue = 0x0000FF;
+      const rectlLightColororange = 0xFFA500;
+      const rectLightIntensity = 70;
+      const rectLightWidth = 20;
+      const rectLightHeight = 10;
+  
+      rectLight[0] = new THREE.RectAreaLight(rectlLightColor, rectLightIntensity, rectLightWidth, rectLightHeight);
+      rectLight[0].position.set(0, 80, 0);
+      rectLight[0].rotation.x = THREE.Math.degToRad(-90);
+      rectLightHelper[0] = new RectAreaLightHelper(rectLight[0]);
+      rectLight[0].add(rectLightHelper[0]);
+  
+      rectLight[1] = new THREE.RectAreaLight(rectlLightColor, rectLightIntensity, rectLightWidth, rectLightHeight);
+      rectLight[1].position.set(0, -60, 0);
+      rectLight[1].rotation.x = THREE.Math.degToRad(90);
+      rectLightHelper[1] = new RectAreaLightHelper(rectLight[1]);
+  
+      rectLight[2] = new THREE.RectAreaLight(rectlLightColororange, rectLightIntensity, rectLightWidth, rectLightHeight);
+      rectLight[2].position.set(60, 35, 60);
+      rectLight[2].rotation.z = THREE.Math.degToRad(90);
+      rectLight[2].rotation.y = THREE.Math.degToRad(45);
+      rectLightHelper[2] = new RectAreaLightHelper(rectLight[2]);
+  
+      rectLight[3] = new THREE.RectAreaLight(rectlLightColorblue, rectLightIntensity, rectLightWidth, rectLightHeight);
+      rectLight[3].position.set(60, -5, -60);
+      rectLight[3].rotation.z = THREE.Math.degToRad(90);
+      rectLight[3].rotation.y = THREE.Math.degToRad(135);
+      rectLightHelper[3] = new RectAreaLightHelper(rectLight[3]);
+      
+      rectLight[4] = new THREE.RectAreaLight(rectlLightColorblue, rectLightIntensity, rectLightWidth, rectLightHeight);
+      rectLight[4].position.set(-60, -5, 60);
+      rectLight[4].rotation.z = THREE.Math.degToRad(90);
+      rectLight[4].rotation.y = THREE.Math.degToRad(-45);
+      rectLightHelper[4] = new RectAreaLightHelper(rectLight[4]);
+      
+      rectLight[5] = new THREE.RectAreaLight(rectlLightColororange, rectLightIntensity, rectLightWidth, rectLightHeight);
+      rectLight[5].position.set(-60, 35, -60);
+      rectLight[5].rotation.z = THREE.Math.degToRad(90);
+      rectLight[5].rotation.y = THREE.Math.degToRad(-135);
+      rectLightHelper[5] = new RectAreaLightHelper(rectLight[5]);
+  
+      if (LightHelperStatus) {
+        rectLight[1].add(rectLightHelper[1]);
+        rectLight[2].add(rectLightHelper[2]);
+        rectLight[3].add(rectLightHelper[3]);
+        rectLight[4].add(rectLightHelper[4]);
+        rectLight[5].add(rectLightHelper[5]);
+      }
+  
+      rectLight.forEach(i => {
+        i.castShadow = true;
+        this.scene.add(i);
+      })
     }
-
-    rectLight.forEach(i => {
-      i.castShadow = true;
-      this.scene.add(i);
-    })
+    
+    
   }
 
   setEnvironment = () => {
     console.log('setEnvironment initiated');
 
-    const { PCStatus } = this.state;
-    this.renderer.physicallyCorrectLights = PCStatus;
+    
+    this.renderer.physicallyCorrectLights = true;
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    this.renderer.outputEncoding = THREE.sRGBEncoding;
+    
     this.levARpmremGenerator = new THREE.PMREMGenerator(this.renderer);
+
+    if (this.perfStatus === 0) {
+      this.renderer.outputEncoding = THREE.LinearEncoding;
+    } else if (this.perfStatus === 1) {
+      this.renderer.outputEncoding = THREE.sRGBEncoding;
+    }
+    
   };
 
   handleEnvironment = () => {
