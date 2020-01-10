@@ -25,7 +25,7 @@ class Shade extends Component {
   }
 
    componentDidMount() {
-    console.log('You reached componentDidMount');
+    // console.log('You reached componentDidMount');
     this.startStats();
     this.setScene();
     this.startCamera();
@@ -50,31 +50,31 @@ class Shade extends Component {
   };
 
   componentWillUnmount() {
-    console.log('You reached componentWillUnmount');
+    // console.log('You reached componentWillUnmount');
     window.removeEventListener('resize', this.handleWindowResize);
     window.cancelAnimationFrame(this.requestID);
     this.controls.dispose();
   };
 
   startStats = () => {
-    console.log('startStats initiated');
+    // console.log('startStats initiated');
     this.stats = new Stats();
     this.mount.appendChild( this.stats.dom );
   }
   setScene = () => {
-    console.log('setScene initiated');
+    // console.log('setScene initiated');
     this.width = this.mount.clientWidth;
     this.height = this.mount.clientHeight;
     this.scene = new THREE.Scene();
   };
 
   startCamera = () => {
-    console.log('startCamera initiated');
+    // console.log('startCamera initiated');
     this.camera = new THREE.PerspectiveCamera(75,this.width / this.height,0.2,300);
   };
 
   setRenderer = () => {
-    console.log('setRenderer initiated');
+    // console.log('setRenderer initiated');
     const { AAStatus } = this.state;
     this.renderer = new THREE.WebGLRenderer( { antialias: AAStatus } );
 
@@ -84,12 +84,12 @@ class Shade extends Component {
   };
 
   setControls = () => {
-    console.log('setControls initiated');
+    // console.log('setControls initiated');
     this.controls = new OrbitControls(this.camera,this.mount);
   };
 
   startLighting = () => {
-    console.log('startLighting initiated');
+    // console.log('startLighting initiated');
     const standaLight = [];
     standaLight[0] = new THREE.PointLight(0xffffff,300,40,2);
     standaLight[1] = new THREE.PointLight(0xffffff,300,40,2);
@@ -102,7 +102,7 @@ class Shade extends Component {
     standaLight[3].position.set(-20,10,0);
 
 
-    console.log(standaLight)
+    // console.log(standaLight)
 
     standaLight.forEach(i => {
       i.castShadow = true;
@@ -111,7 +111,7 @@ class Shade extends Component {
   }
 
   setEnvironment = () => {
-    console.log('setEnvironment initiated');
+    // console.log('setEnvironment initiated');
 
     const { PCStatus } = this.state;
     this.renderer.physicallyCorrectLights = PCStatus;
@@ -121,7 +121,7 @@ class Shade extends Component {
   };
 
   handleEnvironment = () => {
-    console.log('handleEnvironment initiated');
+    // console.log('handleEnvironment initiated');
 
     this.levARpmremGenerator = new THREE.PMREMGenerator(this.renderer);
 
@@ -138,7 +138,7 @@ class Shade extends Component {
   }
 
   handleBackground = () => {
-    console.log('handleBackground initiated');
+    // console.log('handleBackground initiated');
 
 
     new RGBELoader()
@@ -154,7 +154,7 @@ class Shade extends Component {
   }
 
   handleGLTF = () => {
-    console.log('handleGLTF initiated');
+    // console.log('handleGLTF initiated');
 
     new GLTFLoader().load(glbAsset, (glb) => {
   		this.scene.add(glb.scene);
@@ -162,7 +162,7 @@ class Shade extends Component {
   };
 
   startRefGeo = () => {
-    console.log('startRefGeo initiated');
+    // console.log('startRefGeo initiated');
 
     const heroGeometry = new THREE.BoxGeometry(2,2,2);
 
@@ -208,7 +208,7 @@ class Shade extends Component {
   };
 
   handleCameraControls = () => {
-    console.log('handleCamera initiated');
+    // console.log('handleCamera initiated');
     this.camera.position.set( 0, 15, 50 );
     this.controls.target.set(0,3,0);
     this.controls.enableDamping = true;
@@ -218,7 +218,7 @@ class Shade extends Component {
   };
 
   setPostProcessing = () => {
-    console.log('setPostProcessing initiated');
+    // console.log('setPostProcessing initiated');
 
     this.levARcomposer = new EffectComposer(this.renderer);
     this.levARcomposer.addPass( new RenderPass( this.scene, this.camera ) );
