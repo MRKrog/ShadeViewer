@@ -5,6 +5,7 @@ import { rootReducer } from './redux/reducers';
 import { createStore, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
 
+import { BrowserRouter as Router } from "react-router-dom";
 import { composeWithDevTools } from 'redux-devtools-extension';
 import thunk from 'redux-thunk';
 
@@ -19,7 +20,9 @@ const store = createStore(
 
 const shadeFlow = (
   <Provider store={store}>
-      <App />
+    <Router>
+        <App />
+    </Router>
   </Provider>
 )
 
