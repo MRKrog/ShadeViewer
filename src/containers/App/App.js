@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { handleDevice } from '../../utility/featureDetection';
+import { handleGFX } from '../../utility/featureDetection';
 
 import queryString from 'query-string';
 
@@ -17,17 +17,14 @@ class App extends Component {
     let params = queryString.parse(this.props.location.search);
     this.props.setVariant(params.varid);
 
-    const deviceSet = handleDevice()
+    const deviceSet = handleGFX()
 
     this.props.setShadeReady('SHADE_READY');
 
-
-
-
-
     // let params = queryString.parse(this.props.location.search)
-    let setDevice = handleDevice()
-    console.log('setDevice', setDevice);
+    let setGFX = handleGFX()
+
+    console.log('setGFX', setGFX);
 
     // console.log('App Mounted', params);
     this.props.setLoading(true)

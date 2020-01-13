@@ -1,5 +1,5 @@
 export const handleDeliveryTarget = () => {
-
+''
   if(isSafariiOSdata){
     console.log('>>> isSafariiOSdata');
     return 'isSafariiOSdata';
