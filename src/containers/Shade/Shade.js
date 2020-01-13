@@ -39,6 +39,7 @@ class Shade extends Component {
     this.startLights();
     this.startEnvironment();
     this.startGLTFLoader();
+    this.startPostProcessing();
     this.startRefGeo();
     this.renderLoop();
     /*Set is used for "invisible" high-level scene construction.
@@ -111,8 +112,9 @@ class Shade extends Component {
   };
 
   startLights = () => {
-    const { lightingScenario, lightHelperStatus } = this.props;
-
+    console.log('this.props.engine', this.props.engine);
+    const { lightingScenario, lightHelperStatus } = this.props.engine;
+    console.log('lightingScenario', lightingScenario);
     if (lightingScenario === 1) {
       var standaLight = [];
       standaLight[0] = new THREE.PointLight(0xffd6d6,1300,200,2);
@@ -236,10 +238,13 @@ class Shade extends Component {
     new GLTFLoader().load(glbAsset, (glb) => {
   		this.scene.add(glb.scene);
     });
-    console.log('handleCamera initiated');
+  };
+
+  startPostProcessing = () => {
+    console.log('startPostProcessing initiated');
     this.levARcomposer = new EffectComposer(this.renderer);
     this.levARcomposer.addPass(new RenderPass(this.scene, this.camera ));
-  };
+  }
 
   startRefGeo = () => {
     console.log('startRefGeo initiated');
@@ -285,7 +290,6 @@ class Shade extends Component {
     if (this.StatsStatus) {
       this.stats.update();
     }
-    // console.log(this.perfStatus);
   };
 
   handleWindowResize = () => {
