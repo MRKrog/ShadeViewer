@@ -36,12 +36,12 @@ class Shade extends Component {
     this.startCamera();
     this.setRenderer();
     this.setControls();
-    this.startLighting();
+    // this.startLighting();
     this.setEnvironment(); //Renderer settings relevant to handleEnvinronment()
     this.handleEnvironment(); //Loads Environment
     this.handleBackground(); //Loads Background
     this.handleGLTF();
-    this.startRefGeo();
+    // this.startRefGeo();
     this.handleCameraControls();
     this.setPostProcessing();
     this.startUI();
@@ -179,6 +179,7 @@ class Shade extends Component {
     
     this.renderer.physicallyCorrectLights = true;
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    this.renderer.toneMappingExposure = 3;
     
     this.levARpmremGenerator = new THREE.PMREMGenerator(this.renderer);
 
