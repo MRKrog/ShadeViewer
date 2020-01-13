@@ -2,21 +2,6 @@ import * as THREE from "three";
 import * as settings from "./deviceSettings";
 import { handleDeliveryTarget } from "./deliveryTargets";
 
-// const gfxSettings = {
-//   rendererAAStatus: null,
-//   pcLightsStatus: null,
-//   lightHelperStatus: null,
-//   LightingScenario: null,
-//   environmentStatus: null,
-//   toneMappingConfig: null,
-//   toneMappingExposure: null,
-//   colorSpace: null,
-//   controlType: null,
-//   controlDampeningStatus: null,
-//   controlDampeningFactor: null,
-//   controlScrenPanning: null
-// };
-
 export const handleDevice = () => {
 
   // Detected Device returns string based on device
@@ -24,7 +9,20 @@ export const handleDevice = () => {
 
 
   console.log('setTarget', setTarget);
-  console.log('testSEttings', settings.criiOS_Settings);
+  console.log('testSEttings', settings.safariiOS_Settings);
+  console.log('testSEttings', settings.macOS_Settings);
+  console.log('testSEttings', settings.chromeiOS_Settings);
+  console.log('testSEttings', settings.instagramiOS_Settings);
+  console.log('testSEttings', settings.snapchatiOS_Settings);
+  console.log('testSEttings', settings.firefoxiOS_Settings);
+  console.log('testSEttings', settings.facebookiOS_Settings);
+  console.log('testSEttings', settings.chromeAPK_Settings);
+  console.log('testSEttings', settings.mainlineAPK_Settings);
+  console.log('testSEttings', settings.instagramAPK_Settings);
+  console.log('testSEttings', settings.snapchatAPK_Settings);
+  console.log('testSEttings', settings.facebookAPK_Settings);
+  console.log('testSEttings', settings.magicLeapHelio_Settings);
+  console.log('testSEttings', settings.linuxNotLeap_Settings);
 
   // have undefined global gfx settings object
   // Device detection
@@ -39,99 +37,4 @@ export const handleDevice = () => {
 const handleDetect = (navUserAgent) => {
   console.log('in detect');
 
-  // if(isChromeiOS) {
-  //   console.log('true bitches');
-  // }
-
-  // switch () {
-  //   case 'expression':
-  //
-  //     break;
-  //   default:
-  //
-  // }
-
-}
-    //
-    //
-    // if (isiOS) {
-    //   if (isCriOS) {
-    //     RendererAAStatus = true;
-    //     PCLightsStatus = true;
-    //     LightHelperStatus = false;
-    //     LightingScenario = 0;
-    //     EnvironmentStatus = true;
-    //     ToneMappingConfig = THREE.ACESFilmicToneMapping;
-    //     ToneMappingExposure = 3;
-    //     ColorSpace = THREE.LinearEncoding;
-    //     ControlType = 1;
-    //     ControlDampeningStatus = true;
-    //     ControlDampeningFactor = 0.5;
-    //     ControlScrenPanning = true;
-    //   } else if (isFxiOS) {
-    //     RendererAAStatus = true;
-    //     PCLightsStatus = true;
-    //     LightHelperStatus = false;
-    //     LightingScenario = 0;
-    //     EnvironmentStatus = true;
-    //     ToneMappingConfig = THREE.ACESFilmicToneMapping;
-    //     ToneMappingExposure = 3;
-    //     ColorSpace = THREE.LinearEncoding;
-    //     ControlType = 1;
-    //     ControlDampeningStatus = true;
-    //     ControlDampeningFactor = 0.5;
-    //     ControlScrenPanning = true;
-    //   } else if (isSnapchat) {
-    //     RendererAAStatus = false;
-    //     PCLightsStatus = true;
-    //     LightHelperStatus = false;
-    //     LightingScenario = 1;
-    //     EnvironmentStatus = false;
-    //     ToneMappingConfig = THREE.ACESFilmicToneMapping;
-    //     ToneMappingExposure = 1;
-    //     ColorSpace = THREE.sRGBEncoding;
-    //     ControlType = 1;
-    //     ControlDampeningStatus = true;
-    //     ControlDampeningFactor = 0.5;
-    //     ControlScrenPanning = true;
-    //   } else if (isInstagram) {
-    //     RendererAAStatus = false;
-    //     PCLightsStatus = true;
-    //     LightHelperStatus = false;
-    //     LightingScenario = 1;
-    //     EnvironmentStatus = false;
-    //     ToneMappingConfig = THREE.ACESFilmicToneMapping;
-    //     ToneMappingExposure = 1;
-    //     ColorSpace = THREE.sRGBEncoding;
-    //     ControlType = 1;
-    //     ControlDampeningStatus = true;
-    //     ControlDampeningFactor = 0.5;
-    //     ControlScrenPanning = true;
-    //   }
-    // } else if (isAndroid) {
-    //   RendererAAStatus = false;
-    //   PCLightsStatus = true;
-    //   LightHelperStatus = false;
-    //   LightingScenario = 1;
-    //   EnvironmentStatus = false;
-    //   ToneMappingConfig = THREE.ACESFilmicToneMapping;
-    //   ToneMappingExposure = 1;
-    //   ColorSpace = THREE.sRGBEncoding;
-    //   ControlType = 1;
-    //   ControlDampeningStatus = true;
-    //   ControlDampeningFactor = 0.5;
-    //   ControlScrenPanning = true;
-    // } else {
-    //   RendererAAStatus = true;
-    //   PCLightsStatus = true;
-    //   LightHelperStatus = false;
-    //   LightingScenario = 0;
-    //   EnvironmentStatus = true;
-    //   ToneMappingConfig = THREE.ACESFilmicToneMapping;
-    //   ToneMappingExposure = 1;
-    //   ColorSpace = THREE.sRGBEncoding;
-    //   ControlType = 1;
-    //   ControlDampeningStatus = true;
-    //   ControlDampeningFactor = 0.5;
-    //   ControlScrenPanning = true;
-    // }
+};
