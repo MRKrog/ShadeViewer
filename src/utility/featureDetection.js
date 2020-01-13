@@ -16,6 +16,28 @@ const setDeliveryTarget = (currUA) => {
       return settings.macOS_Settings;
     case 'isChromeiOS':
       return settings.chromeiOS_Settings;
+    case 'isInstagramiOS':
+      return settings.instagramiOS_Settings;
+    case 'isSnapchatiOS':
+      return settings.snapchatiOS_Settings;
+    case 'isFirefoxiOS':
+      return settings.firefoxiOS_Settings;
+    case 'isFaceBookiOS':
+      return settings.facebookiOS_Settings;
+    case 'isChromeAPK':
+      return settings.chromeAPK_Settings;
+    case 'isMainlineAPK':
+      return settings.mainlineAPK_Settings;
+    case 'isInstagramAPK':
+      return settings.instagramAPK_Settings; 
+    case 'isSnapchatAPK':
+      return settings.snapchatAPK_Settings; 
+    case 'isFacebookAPK':
+      return settings.facebookAPK_Settings;
+    case 'isMagicLeapHelio':
+      return settings.magicLeapHelio_Settings; 
+    case 'isLinuxNotLeap':
+        return settings.linuxNotLeap_Settings;     
     default:
       return 'N/A'
   }
