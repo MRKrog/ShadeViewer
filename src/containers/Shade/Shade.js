@@ -24,7 +24,7 @@ class Shade extends Component {
     super(props);
     this.state = {
       StatsStatus: true,
-      LightHelperStatus: true,
+      LightHelperStatus: "",
       LightingScenario: 0,
       EnvironmentStatus: true,
       RendererAAStatus: false,
@@ -32,6 +32,7 @@ class Shade extends Component {
       ToneMappingConfig: "",
       ToneMappingExposure: 0,
       ColorSpace: "",
+      ControlType: 0,
       ControlDampeningStatus: true,
       ControlDampeningFactor: 0,
       ControlScrenPanning: false,
@@ -49,8 +50,83 @@ class Shade extends Component {
 
    componentDidMount() {
     console.log('You reached componentDidMount');
+    var { StatsStatus } = this.state;
+    var { RendererAAStatus } = this.state;
+    var { PCLightsStatus } = this.state;
+    var { LightHelperStatus } = this.state;
+    var { LightingScenario } = this.state;
+    var { EnvironmentStatus } = this.state;
+    var { ToneMappingConfig } = this.state;
+    var { ToneMappingExposure } = this.state;
+    var { ColorSpace } = this.state;
+    var { ControlType } = this.state;
+    var { ControlDampeningStatus } = this.state;
+    var { ControlDampeningFactor } = this.state;
+    var { ControlScrenPanning } = this.state;
     
-    this.startlevARviewer();
+
+    const { isiOS } = this.state;
+    const { isAndroid } = this.state;
+
+    console.log(isAndroid,isiOS);
+
+    //Feature Detection
+
+    if (isiOS) {
+      RendererAAStatus = true;
+      PCLightsStatus = true;
+      LightHelperStatus = false;
+      LightingScenario = 0;
+      EnvironmentStatus = true;
+      ToneMappingConfig = THREE.ACESFilmicToneMapping;
+      ToneMappingExposure = 3;
+      ColorSpace = THREE.LinearEncoding;
+      ControlType = 1;
+      ControlDampeningStatus = true;
+      ControlDampeningFactor = 0.5;
+      ControlScrenPanning = true;
+    } else if (isAndroid) {
+      RendererAAStatus = true;
+      LightHelperStatus = false;
+      PCLightsStatus = true;
+      LightingScenario = 1;
+      EnvironmentStatus = false;
+      ToneMappingConfig = THREE.ACESFilmicToneMapping;
+      ToneMappingExposure = 1;
+      ColorSpace = THREE.sRGBEncoding;
+      ControlType = 1;
+      ControlDampeningStatus = true;
+      ControlDampeningFactor = 0.5;
+      ControlScrenPanning = true;
+    } else {
+      RendererAAStatus = true;
+      LightHelperStatus = false;
+      PCLightsStatus = true;
+      LightingScenario = 0;
+      EnvironmentStatus = true;
+      ToneMappingConfig = THREE.ACESFilmicToneMapping;
+      ToneMappingExposure = 1.25;
+      ControlType = 1;
+      ColorSpace = THREE.sRGBEncoding;
+      ControlDampeningStatus = true;
+      ControlDampeningFactor = 0.5;
+      ControlScrenPanning = true;
+    }
+
+    if (StatsStatus) {
+      console.log('startStats initiated');
+      this.stats = new Stats();
+      this.StatsStatus = true;
+      this.mount.appendChild( this.stats.dom );
+    }
+
+
+    this.startScene();
+    this.startRenderer(RendererAAStatus,PCLightsStatus,ToneMappingConfig,ToneMappingExposure,ColorSpace);
+    this.startControls(ControlType,ControlDampeningStatus,ControlDampeningFactor,ControlScrenPanning);
+    this.startLights(LightingScenario,LightHelperStatus);
+    this.startEnvironment(EnvironmentStatus);
+    this.startGLTFLoader(glbAsset);
     this.startRefGeo();
     this.renderLoop();
     /*Set is used for "invisible" high-level scene construction.
@@ -69,105 +145,49 @@ class Shade extends Component {
     this.controls.dispose();
   };
 
-  startlevARviewer = () => {
-    var { StatsStatus } = this.state;
-    var { RendererAAStatus } = this.state;
-    var { PCLightsStatus } = this.state;
-    var { LightHelperStatus } = this.state;
-    var { LightingScenario } = this.state;
-    var { EnvironmentStatus } = this.state;
-    var { ToneMappingConfig } = this.state;
-    var { ToneMappingExposure } = this.state;
-    var { ColorSpace } = this.state;
-    var { ControlDampeningStatus } = this.state;
-    var { ControlDampeningFactor } = this.state;
-    var { ControlScrenPanning } = this.state;
-    
-
-    const { isiOS } = this.state;
-    const { isAndroid } = this.state;
-
-    console.log(isAndroid,isiOS);
-
-    //Feature Detection
-
-    if (isiOS) {
-      RendererAAStatus = true;
-      PCLightsStatus = true;
-      LightingScenario = 0;
-      EnvironmentStatus = true;
-      ToneMappingConfig = THREE.ACESFilmicToneMapping;
-      ToneMappingExposure = 3;
-      ColorSpace = THREE.LinearEncoding;
-      ControlDampeningStatus = true;
-      ControlDampeningFactor = 0.5;
-      ControlScrenPanning = true;
-    } else if (isAndroid) {
-      RendererAAStatus = true;
-      PCLightsStatus = true;
-      LightingScenario = 1;
-      EnvironmentStatus = false;
-      ToneMappingConfig = THREE.ACESFilmicToneMapping;
-      ToneMappingExposure = 1;
-      ColorSpace = THREE.sRGBEncoding;
-      ControlDampeningStatus = true;
-      ControlDampeningFactor = 0.5;
-      ControlScrenPanning = true;
-    } else {
-      RendererAAStatus = true;
-      PCLightsStatus = true;
-      LightingScenario = 0;
-      EnvironmentStatus = true;
-      ToneMappingConfig = THREE.ACESFilmicToneMapping;
-      ToneMappingExposure = 1.25;
-      ColorSpace = THREE.sRGBEncoding;
-      ControlDampeningStatus = true;
-      ControlDampeningFactor = 0.5;
-      ControlScrenPanning = true;
-    }
-
-    if (StatsStatus) {
-      console.log('startStats initiated');
-      this.stats = new Stats();
-      this.StatsStatus = true;
-      this.mount.appendChild( this.stats.dom );
-    }
-
+  startScene = () => {
     console.log('setScene initiated');
 
-    this.perfStatus = 0; //0 = Linear High, 1 = sRGB High, 2 = sRGB Low
     this.width = this.mount.clientWidth;
     this.height = this.mount.clientHeight;
+
     this.scene = new THREE.Scene();
 
     console.log('startCamera initiated');
-    
+
     this.camera = new THREE.PerspectiveCamera(75,this.width / this.height,0.2,3000);
+    this.camera.position.set( 0, 15, 50 );
 
     console.log('setRenderer initiated');
+  };
 
-    this.renderer = new THREE.WebGLRenderer( { RendererAAStatus } );
+  startRenderer = (a,b,c,d,e) => {
+    this.renderer = new THREE.WebGLRenderer( { a } );
     this.renderer.setSize(this.width,this.height);
     this.renderer.setPixelRatio(window.devicePixelRatio);
-    
+    this.renderer.physicallyCorrectLights = b;
+    this.renderer.toneMapping = c;
+    this.renderer.toneMappingExposure = d;
+    this.renderer.outputEncoding = e;
     // mount using React ref
-    
-    this.mount.appendChild(this.renderer.domElement); 
-  
+    this.mount.appendChild(this.renderer.domElement);  
+  };
+
+  startControls = (a,b,c,d) => {
     console.log('setControls initiated');
+    if (a === 1) {
+      this.controls = new OrbitControls(this.camera,this.mount);
+      this.controls.target.set(0,3,0);
+      this.controls.enableDamping = b;
+      this.controls.dampingFactor = c;
+      this.controls.screenSpacePanning = d;
+      this.controls.update();
+    };
+  };
 
-    this.controls = new OrbitControls(this.camera,this.mount);
-
-    console.log('setEnvironment initiated');
-
-    
-    this.renderer.physicallyCorrectLights = PCLightsStatus;
-    this.renderer.toneMapping = ToneMappingConfig;
-    this.renderer.toneMappingExposure = ToneMappingExposure;
-    this.renderer.outputEncoding = ColorSpace;
-
-    if (LightingScenario === 1) {
-      const standaLight = [];
+  startLights = (a,b) => {
+    if (a === 1) {
+      var standaLight = [];
       standaLight[0] = new THREE.PointLight(0xffd6d6,1300,200,2);
       standaLight[1] = new THREE.PointLight(0xd7d6ff,1300,200,2);
       standaLight[2] = new THREE.PointLight(0xffd6d6,1300,200,2);
@@ -188,7 +208,7 @@ class Shade extends Component {
         i.castShadow = true;
         this.scene.add(i);
       })
-    } else if (LightingScenario === 2) {
+    } else if (a === 2) {
       RectAreaLightUniformsLib.init();
     
       const rectLight = [];
@@ -236,7 +256,7 @@ class Shade extends Component {
       rectLight[5].rotation.y = THREE.Math.degToRad(-135);
       rectLightHelper[5] = new RectAreaLightHelper(rectLight[5]);
   
-      if (LightHelperStatus) {
+      if (b) {
         rectLight[1].add(rectLightHelper[1]);
         rectLight[2].add(rectLightHelper[2]);
         rectLight[3].add(rectLightHelper[3]);
@@ -248,12 +268,13 @@ class Shade extends Component {
         i.castShadow = true;
         this.scene.add(i);
       })
-    };
-    
-    
+    }
+  };
+
+  startEnvironment = (a) => {
     this.levARpmremGenerator = new THREE.PMREMGenerator(this.renderer);
     
-    if (EnvironmentStatus) {
+    if (a) {
       new RGBELoader()
       .setDataType(THREE.UnsignedByteType)
       .load(hdrENV, (texture) => {
@@ -277,20 +298,14 @@ class Shade extends Component {
     }
     );
     this.levARpmremGenerator.compileEquirectangularShader();
+  };
 
-    console.log('handleGLTF initiated');
-
-    new GLTFLoader().load(glbAsset, (glb) => {
+  startGLTFLoader = (a) => {
+    new GLTFLoader().load(a, (glb) => {
   		this.scene.add(glb.scene);
     });
     
     console.log('handleCamera initiated');
-    this.camera.position.set( 0, 15, 50 );
-    this.controls.target.set(0,3,0);
-    this.controls.enableDamping = ControlDampeningStatus;
-    this.controls.dampingFactor = ControlDampeningFactor;
-    this.controls.screenSpacePanning = ControlScrenPanning;
-    this.controls.update();
 
     this.levARcomposer = new EffectComposer(this.renderer);
     this.levARcomposer.addPass( new RenderPass( this.scene, this.camera ) );
