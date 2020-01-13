@@ -231,11 +231,11 @@ class Shade extends Component {
 
   startGLTFLoader = () => {
     const { variant } = this.props;
-    // https://shopifydependencies.s3.amazonaws.com/ar/31685891326045.glb
+    // https://shopifydependencies.s3.amazonaws.com/ar/31230426054690.glb
     const levarImage = `https://shopifydependencies.s3.amazonaws.com/ar/${variant}.glb`;
     // glbAsset
     // dynamic image load
-    new GLTFLoader().load(glbAsset, (glb) => {
+    new GLTFLoader().load(levarImage, (glb) => {
   		this.scene.add(glb.scene);
     });
   };
