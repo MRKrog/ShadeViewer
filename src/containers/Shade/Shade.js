@@ -25,6 +25,15 @@ class Shade extends Component {
     this.state = {
       StatsStatus: "",
       LightHelperStatus: true,
+      RendererAAStatus: true,
+      PCLightsStatus: true,
+      ToneMappingConfig: THREE.ACESFilmicToneMapping,
+      ToneMappingExposure: 3,
+      ColorSpace: THREE.LinearEncoding,
+      ControlDampeningStatus: true,
+      ControlDampeningFactor: true,
+      ControlScrenPanning: true
+
     };
   }
 
@@ -59,6 +68,15 @@ class Shade extends Component {
     this.mount.appendChild( this.stats.dom );
   };
   startlevARviewer = () => {
+    const { RendererAAStatus } = this.state;
+    const { PCLightsStatus } = this.state;
+    const { ToneMappingConfig } = this.state;
+    const { ToneMappingExposure } = this.state;
+    const { ColorSpace } = this.state;
+    const { ControlDampeningStatus } = this.state;
+    const { ControlDampeningFactor } = this.state;
+    const { ControlScrenPanning } = this.state;
+
     console.log('setScene initiated');
 
     this.perfStatus = 0; //0 = Linear High, 1 = sRGB High, 2 = sRGB Low
@@ -72,14 +90,14 @@ class Shade extends Component {
 
     console.log('setRenderer initiated');
 
-    this.renderer = new THREE.WebGLRenderer( { antialias: true } );
-
+    this.renderer = new THREE.WebGLRenderer( { RendererAAStatus } );
     this.renderer.setSize(this.width,this.height);
     this.renderer.setPixelRatio(window.devicePixelRatio);
-    this.mount.appendChild(this.renderer.domElement); 
     
     // mount using React ref
-
+    
+    this.mount.appendChild(this.renderer.domElement); 
+  
     console.log('setControls initiated');
 
     this.controls = new OrbitControls(this.camera,this.mount);
@@ -87,14 +105,12 @@ class Shade extends Component {
     console.log('setEnvironment initiated');
 
     
-    this.renderer.physicallyCorrectLights = true;
-    this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    this.renderer.toneMappingExposure = 3;
+    this.renderer.physicallyCorrectLights = PCLightsStatus;
+    this.renderer.toneMapping = ToneMappingConfig;
+    this.renderer.toneMappingExposure = ToneMappingExposure;
+    this.renderer.outputEncoding = ColorSpace;
     
     this.levARpmremGenerator = new THREE.PMREMGenerator(this.renderer);
-
-    
-    this.renderer.outputEncoding = THREE.LinearEncoding;
 
     new RGBELoader()
     .setDataType(THREE.UnsignedByteType)
@@ -127,9 +143,9 @@ class Shade extends Component {
     console.log('handleCamera initiated');
     this.camera.position.set( 0, 15, 50 );
     this.controls.target.set(0,3,0);
-    this.controls.enableDamping = true;
-    this.controls.dampingFactor = 0.5;
-    this.controls.screenSpacePanning = true;
+    this.controls.enableDamping = ControlDampeningStatus;
+    this.controls.dampingFactor = ControlDampeningFactor;
+    this.controls.screenSpacePanning = ControlScrenPanning;
     this.controls.update();
 
     this.levARcomposer = new EffectComposer(this.renderer);
