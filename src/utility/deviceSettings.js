@@ -13,7 +13,7 @@ export const safariiOS_Settings = {
   controlType: 1,
   controlDampeningStatus: true,
   controlDampeningFactor: 0.5,
-  controlScrenPanning: true
+  controlScreenPanning: true
 };
 
 export const macOS_Settings = {
@@ -29,7 +29,7 @@ export const macOS_Settings = {
   controlType: 1,
   controlDampeningStatus: true,
   controlDampeningFactor: 0.5,
-  controlScrenPanning: true
+  controlScreenPanning: true
 };
 
 export const chromeiOS_Settings = {
@@ -45,7 +45,7 @@ export const chromeiOS_Settings = {
   controlType: 1,
   controlDampeningStatus: true,
   controlDampeningFactor: 0.5,
-  controlScrenPanning: true
+  controlScreenPanning: true
 };
 
 export const instagramiOS_Settings = {
@@ -61,7 +61,7 @@ export const instagramiOS_Settings = {
   controlType: 1,
   controlDampeningStatus: true,
   controlDampeningFactor: 0.5,
-  controlScrenPanning: true
+  controlScreenPanning: true
 };
 
 export const snapchatiOS_Settings = {
@@ -77,7 +77,7 @@ export const snapchatiOS_Settings = {
   controlType: 1,
   controlDampeningStatus: true,
   controlDampeningFactor: 0.5,
-  controlScrenPanning: true
+  controlScreenPanning: true
 };
 
 export const firefoxiOS_Settings = {
@@ -93,7 +93,7 @@ export const firefoxiOS_Settings = {
   controlType: 1,
   controlDampeningStatus: true,
   controlDampeningFactor: 0.5,
-  controlScrenPanning: true
+  controlScreenPanning: true
 };
 
 export const facebookiOS_Settings = {
@@ -109,7 +109,7 @@ export const facebookiOS_Settings = {
   controlType: 1,
   controlDampeningStatus: true,
   controlDampeningFactor: 0.5,
-  controlScrenPanning: true
+  controlScreenPanning: true
 };
 
 export const chromeAPK_Settings = {
@@ -125,7 +125,7 @@ export const chromeAPK_Settings = {
   controlType: 1,
   controlDampeningStatus: true,
   controlDampeningFactor: 0.5,
-  controlScrenPanning: true
+  controlScreenPanning: true
 };
 
 export const mainlineAPK_Settings = {
@@ -141,7 +141,7 @@ export const mainlineAPK_Settings = {
   controlType: 1,
   controlDampeningStatus: true,
   controlDampeningFactor: 0.5,
-  controlScrenPanning: true
+  controlScreenPanning: true
 };
 
 export const instagramAPK_Settings = {
@@ -157,7 +157,7 @@ export const instagramAPK_Settings = {
   controlType: 1,
   controlDampeningStatus: true,
   controlDampeningFactor: 0.5,
-  controlScrenPanning: true
+  controlScreenPanning: true
 };
 
 export const snapchatAPK_Settings = {
@@ -173,7 +173,7 @@ export const snapchatAPK_Settings = {
   controlType: 1,
   controlDampeningStatus: true,
   controlDampeningFactor: 0.5,
-  controlScrenPanning: true
+  controlScreenPanning: true
 };
 
 export const facebookAPK_Settings = {
@@ -189,7 +189,7 @@ export const facebookAPK_Settings = {
   controlType: 1,
   controlDampeningStatus: true,
   controlDampeningFactor: 0.5,
-  controlScrenPanning: true
+  controlScreenPanning: true
 };
 
 export const magicLeapHelio_Settings = {
@@ -205,7 +205,7 @@ export const magicLeapHelio_Settings = {
   controlType: 0,
   controlDampeningStatus: false,
   controlDampeningFactor: 0,
-  controlScrenPanning: false
+  controlScreenPanning: false
 };
 
 export const linuxNotLeap_Settings = {
@@ -221,7 +221,7 @@ export const linuxNotLeap_Settings = {
   controlType: 1,
   controlDampeningStatus: true,
   controlDampeningFactor: 0.5,
-  controlScrenPanning: true
+  controlScreenPanning: true
 };
 
 export const webgl_Settings = {
@@ -237,5 +237,5 @@ export const webgl_Settings = {
   controlType: 1,
   controlDampeningStatus: true,
   controlDampeningFactor: 0.5,
-  controlScrenPanning: true
+  controlScreenPanning: true
 };

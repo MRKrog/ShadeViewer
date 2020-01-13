@@ -16,9 +16,9 @@ class App extends Component {
     this.props.setLoading(true);
     this.handleParams()
     this.handleEngine()
-
-
-    // this.props.setShadeReady('SHADE_READY');
+    console.log('User Agent', navigator.userAgent)
+    console.log('redux state', this.props.engine);
+    this.props.setShadeReady('SHADE_READY');
   }
 
   handleEngine = () => {
@@ -41,7 +41,7 @@ class App extends Component {
         {
           (shadeState === 'SHADE_READY') ? (
             <div className="modal">
-              {/*<Shade url={url} />*/}
+              <Shade url={url} />
             </div>
           ) : (
             <ScreenLoader />

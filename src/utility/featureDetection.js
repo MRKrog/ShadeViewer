@@ -38,6 +38,7 @@ const setDeliveryTarget = (currUA) => {
     case 'isLinuxNotLeap':
         return settings.linuxNotLeap_Settings;
     default:
+      console.log('in default', webGLFD());
       if(webGLFD()) return settings.webgl_Settings
       return 'YOU CANT USE OUR VIEWER'
   }
