@@ -1,4 +1,7 @@
 import React, { Component } from 'react';
+import { connect } from "react-redux";
+import * as actions from "../../redux/actions";
+
 import * as THREE from "three";
 import Stats from 'three/examples/jsm/libs/stats.module.js';
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
@@ -426,4 +429,16 @@ class Shade extends Component {
   }
 }
 
-export default Shade;
+
+export const mapStateToProps = state => ({
+  loading: state.loading,
+  variant: state.variant,
+  shadeState: state.shadeState,
+  engine: state.engine
+});
+
+export const mapDispatchToProps = dispatch => ({
+  setLoading: data => dispatch(actions.setLoading(data)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Shade);

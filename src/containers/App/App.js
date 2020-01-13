@@ -14,51 +14,32 @@ class App extends Component {
 
   componentDidMount() {
     this.props.setLoading(true);
-    let params = queryString.parse(this.props.location.search);
-    this.props.setVariant(params.varid);
+    this.handleParams()
+    this.handleEngine()
 
-    const deviceSet = handleGFX()
 
-    this.props.setShadeReady('SHADE_READY');
-
-    // let params = queryString.parse(this.props.location.search)
-    let setGFX = handleGFX()
-
-    console.log('setGFX', setGFX);
-
-    // console.log('App Mounted', params);
-    this.props.setLoading(true)
-
-    // this.fetchImage(params)
-    this.props.setLoading(false)
+    // this.props.setShadeReady('SHADE_READY');
   }
 
-  //
+  handleEngine = () => {
+    const detectEngine = handleGFX()
+    this.props.setEngine(detectEngine)
+  }
 
-  fetchImage = async (params) => {
-    // https://shopifydependencies.s3.amazonaws.com/ar/31685891326045.glb
-    // const url = `https://shopifydependencies.s3.amazonaws.com/ar/${params.varid}.glb`
-    // console.log(url);
-    // try {
-    //   const response = await fetch(url)
-    //   console.log('response', response);
-    //   const data = await JSON.stringify(response)
-    //   console.log('data', data);
-    // } catch(error) {
-    //   console.log(error);
-    // }
+  handleParams = () => {
+    let params = queryString.parse(this.props.location.search);
+    this.props.setVariant(params.varid);
   }
 
   render() {
-    const { loading } = this.props;
+    const { loading, shadeState } = this.props;
     let params = queryString.parse(this.props.location.search)
     const url = `https://shopifydependencies.s3.amazonaws.com/ar/${params.varid}.glb`;
-
 
     return (
       <div className="App">
         {
-          !loading ? (
+          (shadeState === 'SHADE_READY') ? (
             <div className="modal">
               {/*<Shade url={url} />*/}
             </div>
@@ -76,12 +57,14 @@ export const mapStateToProps = state => ({
   loading: state.loading,
   variant: state.variant,
   shadeState: state.shadeState,
+  engine: state.engine
 });
 
 export const mapDispatchToProps = dispatch => ({
   setLoading: data => dispatch(actions.setLoading(data)),
   setVariant: data => dispatch(actions.setVariant(data)),
   setShadeReady: data => dispatch(actions.setShadeReady(data)),
+  setEngine: data => dispatch(actions.setEngine(data)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(withRouter(App));

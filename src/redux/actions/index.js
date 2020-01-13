@@ -14,6 +14,13 @@ export const setShadeReady = data => ({
 // #END Shade Ready Actions
 
 
+// #START Engine Actions
+export const setEngine = engine => ({
+  type: "SET_ENGINE",
+  engine
+});
+// #END Engine Actions
+
 
 export const setDevice = data => ({
   type: "SET_DEVICE",

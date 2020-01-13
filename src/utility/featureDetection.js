@@ -3,14 +3,13 @@ import * as settings from "./deviceSettings";
 import { handleDeliveryTarget } from "./deliveryTargets";
 
 export const handleGFX = () => {
-  // Detected Device returns string based on device
   const detectedTarget = handleDeliveryTarget();
   return setDeliveryTarget(detectedTarget);
 };
 
 const setDeliveryTarget = (currUA) => {
   switch (currUA) {
-    case 'isSafariiOSdata':
+    case 'isSafariiOS':
       return settings.safariiOS_Settings;
     case 'isMacOS':
       return settings.macOS_Settings;
@@ -29,39 +28,38 @@ const setDeliveryTarget = (currUA) => {
     case 'isMainlineAPK':
       return settings.mainlineAPK_Settings;
     case 'isInstagramAPK':
-      return settings.instagramAPK_Settings; 
+      return settings.instagramAPK_Settings;
     case 'isSnapchatAPK':
-      return settings.snapchatAPK_Settings; 
+      return settings.snapchatAPK_Settings;
     case 'isFacebookAPK':
       return settings.facebookAPK_Settings;
     case 'isMagicLeapHelio':
-      return settings.magicLeapHelio_Settings; 
+      return settings.magicLeapHelio_Settings;
     case 'isLinuxNotLeap':
-        return settings.linuxNotLeap_Settings;     
+        return settings.linuxNotLeap_Settings;
     default:
-      return 'N/A'
+      if(webGLFD()) return settings.webgl_Settings
+      return 'YOU CANT USE OUR VIEWER'
   }
 };
 
-  // console.log('setTarget', setTarget);
-  // console.log('testSEttings', settings.safariiOS_Settings);
-  // console.log('testSEttings', settings.macOS_Settings);
-  // console.log('testSEttings', settings.chromeiOS_Settings);
-  // console.log('testSEttings', settings.instagramiOS_Settings);
-  // console.log('testSEttings', settings.snapchatiOS_Settings);
-  // console.log('testSEttings', settings.firefoxiOS_Settings);
-  // console.log('testSEttings', settings.facebookiOS_Settings);
-  // console.log('testSEttings', settings.chromeAPK_Settings);
-  // console.log('testSEttings', settings.mainlineAPK_Settings);
-  // console.log('testSEttings', settings.instagramAPK_Settings);
-  // console.log('testSEttings', settings.snapchatAPK_Settings);
-  // console.log('testSEttings', settings.facebookAPK_Settings);
-  // console.log('testSEttings', settings.magicLeapHelio_Settings);
-  // console.log('testSEttings', settings.linuxNotLeap_Settings);
 
-  // have undefined global gfx settings object
-  // Device detection
-  // set based on detection update gfx settings
-  // return gfx settings
-  // store in redux
-  // on shade load inject gfx settings into shade object
+ const webGLFD = () => {
+   if (!!window.WebGLRenderingContext) {
+     var canvas = document.createElement("canvas"),
+     names = ["webgl", "experimental-webgl", "moz-webgl", "webkit-3d"],
+     context = false;
+
+     for (var i in names) {
+       try {
+         context = canvas.getContext(names[i]);
+         if (context && typeof context.getParameter === "function") {
+           return 1;
+         }
+       } catch (e) {
+         console.log('webgl catch idk', e);
+       }
+     }
+     return 0;
+   }
+ }

@@ -1,8 +1,8 @@
 export const handleDeliveryTarget = () => {
-''
-  if(isSafariiOSdata){
-    console.log('>>> isSafariiOSdata');
-    return 'isSafariiOSdata';
+
+  if(isSafariiOS){
+    console.log('>>> isSafariiOS');
+    return 'isSafariiOS';
 
   } else if(isMacOS) {
     console.log('>>> isMacOS');
@@ -57,13 +57,12 @@ export const handleDeliveryTarget = () => {
     return 'isLinuxNotLeap';
 
   } else {
-    console.log('>>> isWebGLFD');
-    return webGLFD();
+    console.log('no detection');
   }
 }
 
 
-const isSafariiOSdata = /iPhone|iPad/i.test(navigator.userAgent) &&
+const isSafariiOS = /iPhone|iPad/i.test(navigator.userAgent) &&
     navigator.userAgent.indexOf('OS 13') > -1 &&
     navigator.userAgent.indexOf('CriOS') === -1 &&
     navigator.userAgent.indexOf('Instagram') === -1 &&
@@ -114,25 +113,3 @@ const isLinuxNotLeap = /X11/i.test(navigator.userAgent) &&
 
 const isFacebookAPK = /Android/i.test(navigator.userAgent) &&
     navigator.userAgent.indexOf('FBAV') > -1;
-
- const webGLFD = () => {
-   console.log('>>> in Web glfd');
-   if (!!window.WebGLRenderingContext) {
-     var canvas = document.createElement("canvas"),
-     names = ["webgl", "experimental-webgl", "moz-webgl", "webkit-3d"],
-     context = false;
-
-     for (var i in names) {
-       try {
-         context = canvas.getContext(names[i]);
-         if (context && typeof context.getParameter === "function") {
-           return 1;
-         }
-       } catch (e) {
-         console.log('webgl catch idk', e);
-       }
-     }
-     return 0;
-   }
-   return -1;
- }
