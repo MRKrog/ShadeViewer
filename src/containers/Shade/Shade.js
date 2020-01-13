@@ -16,7 +16,6 @@ import glbAsset from "../../assets/glb/m2tlya.glb"; //Zipped GLTF AR Asset
 const style = {
     height: "1000px",
     width: "100%"
-    
 };
 
 class Shade extends Component {
@@ -24,11 +23,11 @@ class Shade extends Component {
     super(props);
     this.state = {
       StatsStatus: true,
+      RendererAAStatus: false,
+      PCLightsStatus: false,
       LightHelperStatus: "",
       LightingScenario: 0,
       EnvironmentStatus: true,
-      RendererAAStatus: false,
-      PCLightsStatus: false,
       ToneMappingConfig: "",
       ToneMappingExposure: 0,
       ColorSpace: "",
@@ -38,13 +37,10 @@ class Shade extends Component {
       ControlScrenPanning: false,
       isiOS: /iPhone|iPad|iPod/i.test(navigator.userAgent),
       isAndroid: /Android/i.test(navigator.userAgent),
-      isCriOS: navigator.userAgent.indexOf('CriOS') === 1,
-      isInstagram: navigator.userAgent.indexOf('Instagram') === 1,
-      isSnapchat: navigator.userAgent.indexOf('Snapchat') === 1,
-      isFxiOS: navigator.userAgent.indexOf('FxiOS') === 1,
-
-
-
+      isCriOS: /CriOS/i.test(navigator.userAgent),
+      isInstagram: /Instagram/i.test(navigator.userAgent),
+      isSnapchat: /Snapchat/i.test(navigator.userAgent),
+      isFxiOS: /FxiOS/i.test(navigator.userAgent),
     };
   }
 
@@ -67,28 +63,73 @@ class Shade extends Component {
 
     const { isiOS } = this.state;
     const { isAndroid } = this.state;
+    const { isCriOS } = this.state;
+    const { isInstagram } = this.state;
+    const { isSnapchat } = this.state;
+    const { isFxiOS } = this.state;
 
     console.log(isAndroid,isiOS);
 
     //Feature Detection
 
     if (isiOS) {
-      RendererAAStatus = true;
-      PCLightsStatus = true;
-      LightHelperStatus = false;
-      LightingScenario = 0;
-      EnvironmentStatus = true;
-      ToneMappingConfig = THREE.ACESFilmicToneMapping;
-      ToneMappingExposure = 3;
-      ColorSpace = THREE.LinearEncoding;
-      ControlType = 1;
-      ControlDampeningStatus = true;
-      ControlDampeningFactor = 0.5;
-      ControlScrenPanning = true;
+      if (isCriOS) {
+        RendererAAStatus = true;
+        PCLightsStatus = true;
+        LightHelperStatus = false;
+        LightingScenario = 0;
+        EnvironmentStatus = true;
+        ToneMappingConfig = THREE.ACESFilmicToneMapping;
+        ToneMappingExposure = 3;
+        ColorSpace = THREE.LinearEncoding;
+        ControlType = 1;
+        ControlDampeningStatus = true;
+        ControlDampeningFactor = 0.5;
+        ControlScrenPanning = true;
+      } else if (isFxiOS) {
+        RendererAAStatus = true;
+        PCLightsStatus = true;
+        LightHelperStatus = false;
+        LightingScenario = 0;
+        EnvironmentStatus = true;
+        ToneMappingConfig = THREE.ACESFilmicToneMapping;
+        ToneMappingExposure = 3;
+        ColorSpace = THREE.LinearEncoding;
+        ControlType = 1;
+        ControlDampeningStatus = true;
+        ControlDampeningFactor = 0.5;
+        ControlScrenPanning = true;
+      } else if (isSnapchat) {
+        RendererAAStatus = false;
+        PCLightsStatus = true;
+        LightHelperStatus = false;
+        LightingScenario = 1;
+        EnvironmentStatus = false;
+        ToneMappingConfig = THREE.ACESFilmicToneMapping;
+        ToneMappingExposure = 1;
+        ColorSpace = THREE.sRGBEncoding;
+        ControlType = 1;
+        ControlDampeningStatus = true;
+        ControlDampeningFactor = 0.5;
+        ControlScrenPanning = true;
+      } else if (isInstagram) {
+        RendererAAStatus = false;
+        PCLightsStatus = true;
+        LightHelperStatus = false;
+        LightingScenario = 1;
+        EnvironmentStatus = false;
+        ToneMappingConfig = THREE.ACESFilmicToneMapping;
+        ToneMappingExposure = 1;
+        ColorSpace = THREE.sRGBEncoding;
+        ControlType = 1;
+        ControlDampeningStatus = true;
+        ControlDampeningFactor = 0.5;
+        ControlScrenPanning = true;
+      }
     } else if (isAndroid) {
-      RendererAAStatus = true;
-      LightHelperStatus = false;
+      RendererAAStatus = false;
       PCLightsStatus = true;
+      LightHelperStatus = false;
       LightingScenario = 1;
       EnvironmentStatus = false;
       ToneMappingConfig = THREE.ACESFilmicToneMapping;
@@ -100,14 +141,14 @@ class Shade extends Component {
       ControlScrenPanning = true;
     } else {
       RendererAAStatus = true;
-      LightHelperStatus = false;
       PCLightsStatus = true;
+      LightHelperStatus = false;
       LightingScenario = 0;
       EnvironmentStatus = true;
       ToneMappingConfig = THREE.ACESFilmicToneMapping;
-      ToneMappingExposure = 1.25;
-      ControlType = 1;
+      ToneMappingExposure = 1;
       ColorSpace = THREE.sRGBEncoding;
+      ControlType = 1;
       ControlDampeningStatus = true;
       ControlDampeningFactor = 0.5;
       ControlScrenPanning = true;
@@ -119,8 +160,7 @@ class Shade extends Component {
       this.StatsStatus = true;
       this.mount.appendChild( this.stats.dom );
     }
-
-
+    
     this.startScene();
     this.startRenderer(RendererAAStatus,PCLightsStatus,ToneMappingConfig,ToneMappingExposure,ColorSpace);
     this.startControls(ControlType,ControlDampeningStatus,ControlDampeningFactor,ControlScrenPanning);
