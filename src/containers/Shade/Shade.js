@@ -8,7 +8,6 @@ import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
 import { RectAreaLightUniformsLib } from 'three/examples/jsm/lights/RectAreaLightUniformsLib.js';
 import { RectAreaLightHelper } from 'three/examples/jsm/helpers/RectAreaLightHelper.js';
-import * as dat from 'dat.gui';
 
 import hdrBKD from "../../assets/apple_1k.hdr"; //Environment (lights objects)
 import hdrENV from "../../assets/autoshop_1k.hdr";  //Background (visible in viewport)
@@ -31,20 +30,11 @@ class Shade extends Component {
 
    componentDidMount() {
     console.log('You reached componentDidMount');
+    
     this.startStats();
-    this.setScene();
-    this.startCamera();
-    this.setRenderer();
-    this.setControls();
+    this.startlevARviewer();
     // this.startLighting();
-    this.setEnvironment(); //Renderer settings relevant to handleEnvinronment()
-    this.handleEnvironment(); //Loads Environment
-    this.handleBackground(); //Loads Background
-    this.handleGLTF();
-    // this.startRefGeo();
-    this.handleCameraControls();
-    this.setPostProcessing();
-    this.startUI();
+    this.startRefGeo();
     this.renderLoop();
     /*Set is used for "invisible" high-level scene construction.
     Start is used for objects in said scene.
@@ -67,42 +57,84 @@ class Shade extends Component {
     this.stats = new Stats();
     this.StatsStatus = true;
     this.mount.appendChild( this.stats.dom );
-  }
-  setScene = () => {
+  };
+  startlevARviewer = () => {
     console.log('setScene initiated');
+
     this.perfStatus = 0; //0 = Linear High, 1 = sRGB High, 2 = sRGB Low
     this.width = this.mount.clientWidth;
     this.height = this.mount.clientHeight;
     this.scene = new THREE.Scene();
-  };
 
-  startCamera = () => {
     console.log('startCamera initiated');
+    
     this.camera = new THREE.PerspectiveCamera(75,this.width / this.height,0.2,3000);
-  };
 
-  setRenderer = () => {
     console.log('setRenderer initiated');
 
-  if (this.perfStatus === 0) {
     this.renderer = new THREE.WebGLRenderer( { antialias: true } );
-    console.log('High Linear Spec Renderer Set');
-  } else if (this.perfStatus === 1) {
-    this.renderer = new THREE.WebGLRenderer( { antialias: true } );
-    console.log('High sRGB Spec Renderer Set');
-  } else if (this.perfStatus === 2) {
-    this.renderer = new THREE.WebGLRenderer( { antialias: false } );
-    console.log('Low sRGB Spec Renderer Set');
-  } 
 
     this.renderer.setSize(this.width,this.height);
     this.renderer.setPixelRatio(window.devicePixelRatio);
-    this.mount.appendChild(this.renderer.domElement); // mount using React ref
-  };
+    this.mount.appendChild(this.renderer.domElement); 
+    
+    // mount using React ref
 
-  setControls = () => {
     console.log('setControls initiated');
+
     this.controls = new OrbitControls(this.camera,this.mount);
+
+    console.log('setEnvironment initiated');
+
+    
+    this.renderer.physicallyCorrectLights = true;
+    this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    this.renderer.toneMappingExposure = 3;
+    
+    this.levARpmremGenerator = new THREE.PMREMGenerator(this.renderer);
+
+    
+    this.renderer.outputEncoding = THREE.LinearEncoding;
+
+    new RGBELoader()
+    .setDataType(THREE.UnsignedByteType)
+    .load(hdrENV, (texture) => {
+    	var envMap = this.levARpmremGenerator.fromEquirectangular(texture).texture;
+    	this.levARpmremGenerator.dispose();
+
+    	this.scene.environment = envMap;
+    }
+    );
+    this.levARpmremGenerator.compileEquirectangularShader();
+
+    new RGBELoader()
+    .setDataType(THREE.UnsignedByteType)
+    .load(hdrBKD, (texture) => {
+    	var bkdMap = this.levARpmremGenerator.fromEquirectangular(texture).texture;
+    	this.levARpmremGenerator.dispose();
+
+    	this.scene.background = bkdMap;
+    }
+    );
+    this.levARpmremGenerator.compileEquirectangularShader();
+
+    console.log('handleGLTF initiated');
+
+    new GLTFLoader().load(glbAsset, (glb) => {
+  		this.scene.add(glb.scene);
+    });
+    
+    console.log('handleCamera initiated');
+    this.camera.position.set( 0, 15, 50 );
+    this.controls.target.set(0,3,0);
+    this.controls.enableDamping = true;
+    this.controls.dampingFactor = 0.5;
+    this.controls.screenSpacePanning = true;
+    this.controls.update();
+
+    this.levARcomposer = new EffectComposer(this.renderer);
+    this.levARcomposer.addPass( new RenderPass( this.scene, this.camera ) );
+    
   };
 
   startLighting = () => {
@@ -171,62 +203,6 @@ class Shade extends Component {
     }
     
     
-  }
-
-  setEnvironment = () => {
-    console.log('setEnvironment initiated');
-
-    
-    this.renderer.physicallyCorrectLights = true;
-    this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    this.renderer.toneMappingExposure = 3;
-    
-    this.levARpmremGenerator = new THREE.PMREMGenerator(this.renderer);
-
-    if (this.perfStatus === 0) {
-      this.renderer.outputEncoding = THREE.LinearEncoding;
-    } else if (this.perfStatus === 1) {
-      this.renderer.outputEncoding = THREE.sRGBEncoding;
-    }
-    
-  };
-
-  handleEnvironment = () => {
-    console.log('handleEnvironment initiated');
-
-    new RGBELoader()
-    .setDataType(THREE.UnsignedByteType)
-    .load(hdrENV, (texture) => {
-    	var envMap = this.levARpmremGenerator.fromEquirectangular(texture).texture;
-    	this.levARpmremGenerator.dispose();
-
-    	this.scene.environment = envMap;
-    }
-    );
-    this.levARpmremGenerator.compileEquirectangularShader();
-  }
-
-  handleBackground = () => {
-    console.log('handleBackground initiated');
-
-    new RGBELoader()
-    .setDataType(THREE.UnsignedByteType)
-    .load(hdrBKD, (texture) => {
-    	var bkdMap = this.levARpmremGenerator.fromEquirectangular(texture).texture;
-    	this.levARpmremGenerator.dispose();
-
-    	this.scene.background = bkdMap;
-    }
-    );
-    this.levARpmremGenerator.compileEquirectangularShader();
-  }
-
-  handleGLTF = () => {
-    console.log('handleGLTF initiated');
-
-    new GLTFLoader().load(glbAsset, (glb) => {
-  		this.scene.add(glb.scene);
-  	});
   };
 
   startRefGeo = () => {
@@ -268,54 +244,6 @@ class Shade extends Component {
     this.heroSphereGlossy.position.set(0,-10,-12);
     this.scene.add(this.heroSphereMirror, this.heroSphereFlat, this.heroSphereGlossy);
   };
-
-  handleCameraControls = () => {
-    console.log('handleCamera initiated');
-    this.camera.position.set( 0, 15, 50 );
-    this.controls.target.set(0,3,0);
-    this.controls.enableDamping = true;
-    this.controls.dampingFactor = 0.5;
-    this.controls.screenSpacePanning = true;
-    this.controls.update();
-  };
-
-  setPostProcessing = () => {
-    console.log('setPostProcessing initiated');
-
-    this.levARcomposer = new EffectComposer(this.renderer);
-    this.levARcomposer.addPass( new RenderPass( this.scene, this.camera ) );
-  };
-
-  startUI = () => {
-    this.gfxParams = function() {
-      this.perfStatus = "";
-      this.hotTake = 2;
-    };
-
-    this.gfx = new this.gfxParams();
-
-    const gui = this.gui = new dat.GUI({autoPlace: true, width: 260, hideable: true});
-  
-    var controller = gui.add(this.gfx, 'perfStatus', { HighLinear: 0, HighSRGB: 1, LowSRGB: 2 } );
-    controller.onChange(function(value) {
-      // Fires when a controller loses focus.
-      this.perfStatus = value;
-      console.log("I'm example bees shit");
-      console.log("perfStatus = " + this.perfStatus);
-    });
-    controller.onFinishChange(() => this.exampleShit());
-    
-
-    gui.open();
-  }
-
-  exampleShit = () => {
-    console.log("I'm example shit");
-    console.log("perfStatus = " + this.perfStatus);
-    console.log("hot Take = " + this.hotTake);
-
-
-  }
 
   renderLoop = () => {
     this.requestID = window.requestAnimationFrame(this.renderLoop);
