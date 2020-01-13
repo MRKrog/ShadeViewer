@@ -45,6 +45,9 @@ class Shade extends Component {
   }
 
    componentDidMount() {
+    console.log('navigator.userAgent', navigator.userAgent);
+     // console.log(i.test());
+     // i.test
     console.log('You reached componentDidMount');
     var { StatsStatus } = this.state;
     var { RendererAAStatus } = this.state;
@@ -162,6 +165,9 @@ class Shade extends Component {
     }
 
     this.startScene();
+
+    console.log('RendererAAStatus>>>>>>', RendererAAStatus);
+
     this.startRenderer(RendererAAStatus,PCLightsStatus,ToneMappingConfig,ToneMappingExposure,ColorSpace);
     this.startControls(ControlType,ControlDampeningStatus,ControlDampeningFactor,ControlScrenPanning);
     this.startLights(LightingScenario,LightHelperStatus);
