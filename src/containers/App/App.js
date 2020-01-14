@@ -8,16 +8,18 @@ import { withRouter } from "react-router";
 import * as actions from "../../redux/actions";
 
 import Shade from '../Shade/Shade';
+import LevarUI from '../LevarUI/LevarUI';
+import LevarLogo from '../LevarUI/LevarLogo';
 import ScreenLoader from "../../components/ScreenLoader";
 
 class App extends Component {
 
   componentDidMount() {
-    this.props.setLoading(true);
+    // this.props.setLoading(true);
     this.handleParams()
     this.handleEngine()
-    console.log('User Agent', navigator.userAgent)
-    console.log('redux state', this.props.engine);
+    // console.log('User Agent', navigator.userAgent)
+    // console.log('redux state', this.props.engine);
     this.props.setShadeReady('SHADE_READY');
   }
 
@@ -32,16 +34,18 @@ class App extends Component {
   }
 
   render() {
-    const { loading, shadeState } = this.props;
-    let params = queryString.parse(this.props.location.search)
-    const url = `https://shopifydependencies.s3.amazonaws.com/ar/${params.varid}.glb`;
+    const { shadeState } = this.props;
 
     return (
       <div className="App">
         {
           (shadeState === 'SHADE_READY') ? (
-            <div className="modal">
-              <Shade url={url} />
+            <div className="viewer">
+              <LevarUI />
+              <LevarLogo />
+              <section className="Shade-Viewer">
+                <Shade />
+              </section>
             </div>
           ) : (
             <ScreenLoader />

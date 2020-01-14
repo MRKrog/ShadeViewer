@@ -14,7 +14,7 @@ import { RectAreaLightHelper } from 'three/examples/jsm/helpers/RectAreaLightHel
 
 import hdrBKD from "../../assets/apple_1k.hdr"; //Environment (lights objects)
 import hdrENV from "../../assets/autoshop_1k.hdr";  //Background (visible in viewport)
-import glbAsset from "../../assets/glb/m2tlya.glb"; //Zipped GLTF AR Asset
+// import glbAsset from "../../assets/glb/m2tlya.glb"; //Zipped GLTF AR Asset
 
 const style = {
     height: "1000px",
@@ -22,17 +22,15 @@ const style = {
 };
 
 class Shade extends Component {
+  constructor() {
+    super()
+    this.state = {
+      stats: false
+    }
+  }
 
    componentDidMount() {
-    console.log('You reached componentDidMount');
-
-    if (true) {
-      console.log('startStats initiated');
-      this.stats = new Stats();
-      this.StatsStatus = true;
-      this.mount.appendChild( this.stats.dom );
-    }
-
+    // console.log('You reached componentDidMount');
     this.startScene();
     this.startRenderer();
     this.startControls();
@@ -40,7 +38,7 @@ class Shade extends Component {
     this.startEnvironment();
     this.startGLTFLoader();
     this.startPostProcessing();
-    this.startRefGeo();
+    // this.startRefGeo();
     this.renderLoop();
     /*Set is used for "invisible" high-level scene construction.
     Start is used for objects in said scene.
@@ -59,19 +57,19 @@ class Shade extends Component {
   };
 
   startScene = () => {
-    console.log('setScene initiated');
+    // console.log('setScene initiated');
 
     this.width = this.mount.clientWidth;
     this.height = this.mount.clientHeight;
 
     this.scene = new THREE.Scene();
 
-    console.log('startCamera initiated');
+    // console.log('startCamera initiated');
 
     this.camera = new THREE.PerspectiveCamera(75,this.width / this.height,0.2,3000);
     this.camera.position.set( 0, 15, 50 );
 
-    console.log('setRenderer initiated');
+    // console.log('setRenderer initiated');
   };
 
   startRenderer = () => {
@@ -100,7 +98,7 @@ class Shade extends Component {
             controlScreenPanning,
           } = this.props.engine;
 
-    console.log('setControls initiated');
+    // console.log('setControls initiated');
     if (controlType === 1) {
       this.controls = new OrbitControls(this.camera,this.mount);
       this.controls.target.set(0,3,0);
@@ -112,9 +110,8 @@ class Shade extends Component {
   };
 
   startLights = () => {
-    console.log('this.props.engine', this.props.engine);
     const { lightingScenario, lightHelperStatus } = this.props.engine;
-    console.log('lightingScenario', lightingScenario);
+
     if (lightingScenario === 1) {
       var standaLight = [];
       standaLight[0] = new THREE.PointLight(0xffd6d6,1300,200,2);
@@ -131,7 +128,7 @@ class Shade extends Component {
       standaLight[4].position.set(0,35,0);
       standaLight[5].position.set(0,-15,0);
 
-      console.log(standaLight)
+      // console.log(standaLight)
 
       standaLight.forEach(i => {
         i.castShadow = true;
@@ -241,13 +238,13 @@ class Shade extends Component {
   };
 
   startPostProcessing = () => {
-    console.log('startPostProcessing initiated');
+    // console.log('startPostProcessing initiated');
     this.levARcomposer = new EffectComposer(this.renderer);
     this.levARcomposer.addPass(new RenderPass(this.scene, this.camera ));
   }
 
   startRefGeo = () => {
-    console.log('startRefGeo initiated');
+    // console.log('startRefGeo initiated');
     const heroGeometry = new THREE.SphereGeometry(4, 64, 64);
     const heroMaterialMirror = new THREE.MeshStandardMaterial( {
       color: 0x7C7C7C,
@@ -274,29 +271,35 @@ class Shade extends Component {
     });
 
     this.heroSphereMirror = new THREE.Mesh(heroGeometry, heroMaterialMirror);
-    this.heroSphereMirror.position.set(0,-10,0);
+    this.heroSphereMirror.position.set(0, -10, 0);
 
     this.heroSphereFlat = new THREE.Mesh(heroGeometry, heroMaterialFlat);
-    this.heroSphereFlat.position.set(0,-10,12);
+    this.heroSphereFlat.position.set(0, -10, 12);
 
     this.heroSphereGlossy = new THREE.Mesh(heroGeometry, heroMaterialGlossy);
-    this.heroSphereGlossy.position.set(0,-10,-12);
+    this.heroSphereGlossy.position.set(0, -10, -12);
     this.scene.add(this.heroSphereMirror, this.heroSphereFlat, this.heroSphereGlossy);
   };
 
   renderLoop = () => {
     this.requestID = window.requestAnimationFrame(this.renderLoop);
     this.levARcomposer.render();
-    if (this.StatsStatus) {
+
+    if (this.state.stats) {
+      this.stats = new Stats();
+      this.StatsStatus = true;
+      this.mount.appendChild( this.stats.dom );
       this.stats.update();
     }
   };
 
   handleWindowResize = () => {
     this.width = this.mount.clientWidth;
+    // console.log('width', this.width);
     this.height = this.mount.clientHeight;
+    // console.log('height', this.height);
 
-    this.renderer.setSize(this.width,this.height);
+    this.renderer.setSize(this.width, this.height);
     this.camera.aspect = this.width / this.height;
 
     // Note that after making changes to most of camera properties you have to call
